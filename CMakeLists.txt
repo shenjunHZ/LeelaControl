@@ -29,6 +29,6 @@ if(USE_CPU_ONLY)
 endif()
 
 MESSAGE(STATUS "LeelaControl")
-add_subdirectory ("LeelaControl")
+add_subdirectory ("leela-control")
 
 

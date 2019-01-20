@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
@@ -6,6 +7,11 @@
 #include "games/GameLeela.hpp"
 #include "DefineView.hpp"
 
+namespace
+{
+    constexpr int WAIT_GTP_INITIALIZE = 20;
+    const std::string MAX_MEMORY_FOR_SEARCH{"max_memory_for_search"};
+}
 namespace Game
 {
     using namespace Define;
@@ -63,6 +69,13 @@ namespace Game
         }
         char readBuffer[256];
         int readCount = readLine(readBuffer, 256); // IO read
+        std::string strBuffer(readBuffer);
+        std::string::size_type pos = strBuffer.find(MAX_MEMORY_FOR_SEARCH);
+        if(pos != std::string::npos)
+        {
+            QTextStream(stdout) << readBuffer << endl;
+            readCount = readLine(readBuffer, 256);
+        }
         // If it is a GTP comment just print it and wait for the real answer
         if (readBuffer[0] == '#') 
         {
@@ -150,13 +163,16 @@ namespace Game
     bool GameLeela::gameStart(const VersionTuple& minVersion)
     {
         start(QString::fromStdString(m_cmdLine)); // use QProcess
-        std::cout << "cmd line========" << m_cmdLine.c_str() << std::endl;
+        //std::cout << "cmd line========" << m_cmdLine.c_str() << std::endl;
+        /*wait for process start*/
         if (!waitForStarted())
         {
             recordError(errorInfo::ERROR_NO_LEELAZ);
             return false;
         }
-//        checkVersion(minVersion);
+        //sleep(WAIT_GTP_INITIALIZE);
+
+        checkVersion(minVersion);
         QTextStream(stdout) << "Engine has started." << endl;
         for (auto command : m_commands) 
         {

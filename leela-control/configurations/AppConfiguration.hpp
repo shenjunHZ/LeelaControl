@@ -8,6 +8,7 @@
 namespace Config
 {
     constexpr auto leelaPath = LEELA_CONFIG_PREFIX ".leelaPath";
+    constexpr auto enableLeelaLog = LEELA_CONFIG_PREFIX ".enableLeelaLog";
 
     using AppConfiguration = boost::program_options::variables_map;
 

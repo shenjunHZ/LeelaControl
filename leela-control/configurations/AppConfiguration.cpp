@@ -12,7 +12,8 @@ namespace
         using boost::program_options::value;
 
         description.add_options()
-            (Config::leelaPath, value<std::string>()->default_value("./"), "leela zero execute path");
+            (Config::leelaPath, value<std::string>()->default_value("./"), "leela zero execute path")
+            (Config::enableLeelaLog, value<bool>()->default_value(false), "enable leela zero log");
 
 
         return description;

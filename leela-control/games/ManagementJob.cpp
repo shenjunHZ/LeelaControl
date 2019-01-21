@@ -4,9 +4,10 @@
 namespace Game
 {
 
-    ManagementJob::ManagementJob(const std::string& binary)
+    ManagementJob::ManagementJob(const std::string& binary, const bool& enableLeelaLog)
         : m_binaryPath{binary}
         , m_enableGTPEngine{true}
+        , m_enableLeelaLog{enableLeelaLog}
     {
         m_gameJobs.clear();
     }
@@ -18,7 +19,7 @@ namespace Game
 
     void ManagementJob::createJobLeela(const leelaStarLevel& level)
     {
-        m_gameJobs[level] = std::make_unique<Job>(m_binaryPath, m_enableGTPEngine);
+        m_gameJobs[level] = std::make_unique<Job>(m_binaryPath, m_enableGTPEngine, m_enableLeelaLog);
         m_gameJobs[level]->createGameLeela(level);
 
         // to do

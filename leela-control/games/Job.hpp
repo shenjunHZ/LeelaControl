@@ -16,7 +16,7 @@ namespace Game
     class Job : public IJob
     {
     public:
-        Job(const std::string& binary, const bool& enableGTPEngine);
+        Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog);
         ~Job();
         void createGameLeela(const leelaStarLevel& level) override;
         void startGameLeela() override;
@@ -34,6 +34,7 @@ namespace Game
     private:
         bool m_enableGTPEngine;
         std::string m_binaryPath;
+        bool m_enableLeelaLog;
         std::vector<std::string> m_defaultCommands;
         std::unique_ptr<GameLeela> m_gameLeela;
         boost::thread m_threadGame;

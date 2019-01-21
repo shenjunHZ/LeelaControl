@@ -16,10 +16,11 @@ namespace
 
 namespace Game
 {
-    Job::Job(const std::string& binary, const bool& enableGTPEngine)
+    Job::Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog)
         : m_enableGTPEngine{enableGTPEngine}
         , m_binaryPath{binary}
         , m_gameLeela{nullptr}
+        , m_enableLeelaLog{enableLeelaLog}
     {
         inputDefaultCommand();
     }
@@ -52,6 +53,10 @@ namespace Game
         if (isEnableGTPEngine())
         {
             strOption += "-g ";
+        }
+        if(m_enableLeelaLog)
+        {
+            strOption += "--logfile " + m_binaryPath + "leelaz.log ";
         }
         std::string strWeight = "-w ";
 

@@ -73,7 +73,7 @@ namespace Game
         std::string::size_type pos = strBuffer.find(MAX_MEMORY_FOR_SEARCH);
         if(pos != std::string::npos)
         {
-            QTextStream(stdout) << readBuffer << endl;
+            QTextStream(stdout) << "GET:" << readBuffer << endl;
             readCount = readLine(readBuffer, 256);
         }
         // If it is a GTP comment just print it and wait for the real answer
@@ -163,7 +163,7 @@ namespace Game
     bool GameLeela::gameStart(const VersionTuple& minVersion)
     {
         start(QString::fromStdString(m_cmdLine)); // use QProcess
-        //std::cout << "cmd line========" << m_cmdLine.c_str() << std::endl;
+        std::cout << "cmd line========" << m_cmdLine.c_str() << std::endl;
         /*wait for process start*/
         if (!waitForStarted())
         {

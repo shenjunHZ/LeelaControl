@@ -15,7 +15,7 @@ namespace Game
     class ManagementJob : public IManagementJob
     {
     public:
-        ManagementJob(const std::string& binary);
+        ManagementJob(const std::string& binary, const bool& enableLeelaLog);
         ~ManagementJob();
 
         void createJobLeela(const leelaStarLevel& level) override;
@@ -24,6 +24,7 @@ namespace Game
     private:
         std::string m_binaryPath;
         bool m_enableGTPEngine;
+        bool m_enableLeelaLog;
         std::map<leelaStarLevel, gameJobPrt> m_gameJobs;
     };
 }

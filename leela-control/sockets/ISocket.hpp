@@ -4,3 +4,11 @@
 
 #pragma once
 
+namespace endpoints
+{
+    class ISocket
+    {
+    public:
+        virtual ~ISocket() = default;
+    };
+}

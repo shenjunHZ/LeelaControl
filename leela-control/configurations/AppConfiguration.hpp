@@ -5,7 +5,7 @@
 
 #define LEELA_CONFIG_PREFIX "leela"
 
-namespace Config
+namespace configurations
 {
     constexpr auto leelaPath = LEELA_CONFIG_PREFIX ".leelaPath";
     constexpr auto enableLeelaLog = LEELA_CONFIG_PREFIX ".enableLeelaLog";

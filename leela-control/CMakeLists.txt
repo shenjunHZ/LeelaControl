@@ -43,7 +43,7 @@ set(INCLUDE
      games/GameLeela.hpp
      games/IJob.hpp
      games/Job.hpp
-        sockets/ServiceSocket.hpp sockets/ISocket.hpp)
+        sockets/ServiceSocket.hpp sockets/ISocket.hpp applications/ServiceContext.hpp)
 
 set(INCLUDEPATH
     ${CMAKE_CURRENT_LIST_DIR}

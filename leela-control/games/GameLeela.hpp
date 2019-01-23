@@ -4,6 +4,7 @@
 #pragma once
 
 #include <QtCore/QProcess>
+#include <QtCore/QString>
 #include <tuple>
 #include "DefineView.hpp"
 
@@ -29,9 +30,10 @@ namespace Game
 
     private:
         void recordError(const errorInfo& error);
-        void checkVersion(const VersionTuple &minVersion);
+        void checkStatus(const VersionTuple &minVersion);
         bool waitReady();
         bool eatNewLine();
+        bool sendGtpCommand(QString cmd);
 
     private:
         std::string m_strBinary;

@@ -4,5 +4,11 @@
 #pragma once
 
 #include <iostream>
+#include <QtCore/QCoreApplication>
+#include <boost/exception/diagnostic_information.hpp>
+#include "configurations/AppConfiguration.hpp"
+#include "applications/AppInstance.hpp"
+#include "LeelaControl.hpp"
+#include "ParseHelp.hpp"
 
 // TODO: 在此处引用程序需要的其他标头。

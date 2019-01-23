@@ -9,8 +9,7 @@
 
 namespace
 {
-    constexpr int WAIT_GTP_INITIALIZE = 20;
-    const std::string MAX_MEMORY_FOR_SEARCH{"max_memory_for_search"};
+    constexpr int WAIT_GTP_INITIALIZE = 1000 * 1000 * 20;
 }
 namespace Game
 {
@@ -23,16 +22,14 @@ namespace Game
         , m_cmdLine{""}
         , m_commands{commands}
     {
-// #ifdef WIN32
-//         m_strBinary.append(".exe");
-// #endif
+ #ifdef WIN32
+         m_strBinary.append(".exe");
+ #endif
         boost::filesystem::path pathFile(m_strBinary);
         if (! (boost::filesystem::exists(pathFile) && boost::filesystem::is_regular_file(pathFile)))
         {
             // to do log
             recordError(errorInfo::ERROR_NO_LEELAZ);
-
-            //m_strBinary = m_strBinary.substr(2);
         }
         m_cmdLine = m_strBinary + " " + opt + weights;
     }
@@ -58,9 +55,11 @@ namespace Game
         }
     }
 
-    void GameLeela::checkVersion(const VersionTuple &minVersion)
+    void GameLeela::checkStatus(const VersionTuple &minVersion)
     {
-        write(qPrintable("version\n"));
+        usleep(WAIT_GTP_INITIALIZE);
+        //write(qPrintable("version\n"));
+        //QTextStream(stdout) << "version:" << endl;
         waitForBytesWritten(-1);
         if (!waitReady()) 
         {
@@ -68,64 +67,8 @@ namespace Game
             exit(EXIT_FAILURE);
         }
         char readBuffer[256];
-        int readCount = readLine(readBuffer, 256); // IO read
-        std::string strBuffer(readBuffer);
-        std::string::size_type pos = strBuffer.find(MAX_MEMORY_FOR_SEARCH);
-        if(pos != std::string::npos)
-        {
-            QTextStream(stdout) << "GET:" << readBuffer << endl;
-            readCount = readLine(readBuffer, 256);
-        }
-        // If it is a GTP comment just print it and wait for the real answer
-        if (readBuffer[0] == '#') 
-        {
-            readBuffer[readCount - 1] = 0;
-            QTextStream(stdout) << readBuffer << endl;
-            if (!waitReady())
-            {
-                recordError(errorInfo::ERROR_PROCESS);
-                exit(EXIT_FAILURE);
-            }
-            readCount = readLine(readBuffer, 256);
-        }
-        // We expect to read at last "=, space, something"
-        if (readCount <= 3 || readBuffer[0] != '=') 
-        {
-            QTextStream(stdout) << "GTP: " << readBuffer << endl;
-            recordError(errorInfo::ERROR_GTP);
-            exit(EXIT_FAILURE);
-        }
-        QString version_buff(&readBuffer[2]);
-        version_buff = version_buff.simplified();
-        QStringList version_list = version_buff.split(".");
-        if (version_list.size() < 2) 
-        {
-            QTextStream(stdout) << "Unexpected Leela Zero version: " << version_buff << endl;
-            exit(EXIT_FAILURE);
-        }
-        if (version_list.size() < 3) 
-        {
-            version_list.append("0");
-        }
-        int versionCount = (version_list[0].toInt() - std::get<0>(minVersion)) * 10000;
-        versionCount += (version_list[1].toInt() - std::get<1>(minVersion)) * 100;
-        versionCount += version_list[2].toInt() - std::get<2>(minVersion);
-        if (versionCount < 0) 
-        {
-            QTextStream(stdout)
-                << "Leela version is too old, saw " << version_buff
-                << " but expected "
-                << std::get<0>(minVersion) << "."
-                << std::get<1>(minVersion) << "."
-                << std::get<2>(minVersion) << endl;
-            QTextStream(stdout)
-                << "Check https://github.com/gcp/leela-zero for updates." << endl;
-            exit(EXIT_FAILURE);
-        }
-        if (!eatNewLine()) 
-        {
-            exit(EXIT_FAILURE);
-        }
+        int readCount = read(readBuffer, 256); // IO read, have some starting message need to read
+        std::cout << readBuffer << std::endl;
     }
 
     bool GameLeela::waitReady()
@@ -160,6 +103,33 @@ namespace Game
         return true;
     }
 
+    bool GameLeela::sendGtpCommand(QString cmd)
+    {
+        write(qPrintable(cmd.append("\n")));
+        waitForBytesWritten(-1);
+        if (!waitReady())
+        {
+            recordError(errorInfo::ERROR_PROCESS);
+            return false;
+        }
+
+        char readBuffer[256];
+        int readCount = readLine(readBuffer, 256);
+
+        QTextStream(stdout) << "GTP: " << readBuffer << endl;
+        if (readCount <= 0 || readBuffer[0] != '=')
+        {
+            recordError(errorInfo::ERROR_GTP);
+            return false;
+        }
+        if (!eatNewLine())
+        {
+            recordError(errorInfo::ERROR_PROCESS);
+            return false;
+        }
+        return true;
+    }
+
     bool GameLeela::gameStart(const VersionTuple& minVersion)
     {
         start(QString::fromStdString(m_cmdLine)); // use QProcess
@@ -170,20 +140,19 @@ namespace Game
             recordError(errorInfo::ERROR_NO_LEELAZ);
             return false;
         }
-        //sleep(WAIT_GTP_INITIALIZE);
 
-        checkVersion(minVersion);
+        checkStatus(minVersion);
         QTextStream(stdout) << "Engine has started." << endl;
         for (auto command : m_commands) 
         {
-            QTextStream(stdout) << QString::fromStdString(command) << endl;
-//             if (!sendGtpCommand(command))
-//             {
-//                 QTextStream(stdout) << "GTP failed on: " << QString::fromStdString(command) << endl;
-//                 exit(EXIT_FAILURE);
-//             }
+            QTextStream(stdout) << QString::fromStdString(command) + ": " << endl;
+             if (!sendGtpCommand(QString::fromStdString(command)))
+             {
+                 QTextStream(stdout) << "GTP failed on: " << QString::fromStdString(command) << endl;
+                 exit(EXIT_FAILURE);
+             }
         }
-        QTextStream(stdout) << "Thinking time set." << endl;
+        //QTextStream(stdout) << "Thinking time set." << endl;
         return true;
     }
 

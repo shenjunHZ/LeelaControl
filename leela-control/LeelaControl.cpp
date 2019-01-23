@@ -2,15 +2,7 @@
 /* 
 * Copyright (C) jun shen
 */
-
-#include <QtCore/QCoreApplication>
-#include <boost/exception/diagnostic_information.hpp>
-#include "configurations/AppConfiguration.hpp"
-#include "applications/AppInstance.hpp"
 #include "LeelaControl.hpp"
-#include "ParseHelp.hpp"
-
-using namespace std;
 
 int main(int argc, char* argv[])
 {

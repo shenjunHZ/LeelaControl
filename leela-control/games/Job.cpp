@@ -44,7 +44,7 @@ namespace Game
         m_defaultCommands.push_back("version");
         /*this is set so that the time value is not calculated by the machine
         as the development board resource limited*/
-        m_defaultCommands.push_back("time_setting 0 0 1");
+        m_defaultCommands.push_back("time_settings 0 0 1");
     }
 
     void Job::createGameLeela(const leelaStarLevel& level)

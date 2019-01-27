@@ -18,6 +18,9 @@ elseif(${ARM_LINUX})
     find_package(Boost 1.58.0 REQUIRED program_options filesystem)
 
     find_package(Qt5Core REQUIRED)
+    #find_package(pkgconfig)
+    #find_package(libzmq REQUIRED)
+    #INCLUDE_DIRECTORIES(/usr/lib/arm-linux-gnueabihf)
 
     # include
     include_directories(${Boost_INCLUDE_DIRS})
@@ -92,8 +95,9 @@ elseif(${ARM_LINUX})
     target_link_libraries(${EXECUTABLE_NAME}
             PRIVATE
                 ${Boost_LIBRARIES}
-                boost_thread
                 ${Qt5Core_LIBRARIES}
+                boost_thread
+                zmq
     )
 elseif(${GCC_LINUX})
     target_link_libraries(${EXECUTABLE_NAME}

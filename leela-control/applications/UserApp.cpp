@@ -2,6 +2,7 @@
 // Created by junshen on 1/26/19.
 //
 #include <iostream>
+#include <atomic>
 #include "UserApp.hpp"
 namespace
 {

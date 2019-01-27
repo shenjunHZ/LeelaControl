@@ -20,7 +20,11 @@ elseif(${ARM_LINUX})
     find_package(Qt5Core REQUIRED)
     #find_package(pkgconfig)
     #find_package(libzmq REQUIRED)
-    #INCLUDE_DIRECTORIES(/usr/lib/arm-linux-gnueabihf)
+    INCLUDE_DIRECTORIES(
+            /home/junshen/tools/zeromq-4.3.1/arm_bin/include
+            /home/junshen/tools/zmqHelp
+    )
+    LINK_DIRECTORIES(/home/junshen/tools/zeromq-4.3.1/arm_bin/lib)
 
     # include
     include_directories(${Boost_INCLUDE_DIRS})

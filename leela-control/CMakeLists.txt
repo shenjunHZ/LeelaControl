@@ -96,7 +96,6 @@ elseif(${ARM_LINUX})
             PRIVATE
                 ${Boost_LIBRARIES}
                 ${Qt5Core_LIBRARIES}
-                boost_thread
                 zmq
     )
 elseif(${GCC_LINUX})
@@ -105,7 +104,9 @@ elseif(${GCC_LINUX})
             boost_program_options
             boost_thread
             boost_system
-            ${Qt5Core_LIBRARIES}
+            boost_filesystem
+            zmq
+            Qt5Core
         )
 endif()
        

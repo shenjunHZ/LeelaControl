@@ -1,52 +1,26 @@
 #pragma once
+
+#include <iostream>
 #include <boost/program_options.hpp>
+#include <boost/asio.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 #include <QtCore/QTextStream>
 #include <stdlib.h>
+#include <functional>
+#include <string>
+#include <regex>
+#include <stdexcept>
 #include "configurations/DefineView.hpp"
 
-namespace Help
+namespace helps
 {
-    void parseProgramOptions(int argc, char* argv[], boost::program_options::variables_map& cmdParams)
-    {
-        namespace po = boost::program_options;
+    void parseProgramOptions(int argc, char* argv[], boost::program_options::variables_map& cmdParams);
 
-        po::options_description optDescr("");
-        {
-            try
-            {
-                auto defaultConfigFilePath = po::value<std::string>()->default_value("configuration.ini");
+    configurations::AppAddresses getAppAddresses(const boost::program_options::variables_map& cmdParams);
 
-                optDescr.add_options()("config-file,c", defaultConfigFilePath, "Configuration file path")(
-                    "help,h", "Prints this help message");
-            }
-            catch (boost::bad_lexical_cast& e)
-            {
-                std::cout << "Error: " << "parseProgramOptions:lexical_cast Failed in  default_value";
-                std::cout << e.what() << std::endl;
-            }
+	std::string boostAsioBasedHostNameResolver(const std::string& address);
 
-            try
-            {
-                po::store(po::parse_command_line(argc, argv, optDescr), cmdParams);
-                po::notify(cmdParams);
-            }
-            catch (const po::error& e)
-            {
-                std::cout << "Error: " << e.what() << std::endl;
-                exit(EXIT_FAILURE);
-            }
-
-            if (cmdParams.count("help") != 0)
-            {
-                std::cout << optDescr << std::endl;
-                exit(EXIT_SUCCESS);
-            }
-        }
-    }
-
-    configurations::AppAddresses getAppAddresses(const boost::program_options::variables_map& cmdParams)
-    {
-        using namespace configurations::keys;
-        return configurations::AppAddresses{cmdParams[serviceAddress].as<std::string>()};
-    }
-}
+    std::string createBindableAddress(
+            const std::string& zmqAddress,
+            const std::function<std::string(const std::string&)>& hostNameResolver = boostAsioBasedHostNameResolver);
+} // namespace helps

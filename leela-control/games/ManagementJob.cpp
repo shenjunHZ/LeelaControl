@@ -1,7 +1,7 @@
 #include "games/ManagementJob.hpp"
 #include "Job.hpp"
 
-namespace Game
+namespace games
 {
 
     ManagementJob::ManagementJob(const std::string& binary, const bool& enableLeelaLog)

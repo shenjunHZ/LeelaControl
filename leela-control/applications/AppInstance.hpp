@@ -1,23 +1,30 @@
 #pragma once
+
+#include <zmq.hpp>
+#include "UserApp.hpp"
 #include "configurations/AppConfiguration.hpp"
+#include "configurations/DefineView.hpp"
+#include "sockets/ZmqReceiver.hpp"
+#include "sockets/ServiceReceiver.hpp"
+#include "games/ManagementJob.hpp"
 
-namespace Game
-{
-    class IManagementJob;
-}
-
-namespace App
+namespace applications
 {
     class AppInstance
     {
     public:
-        AppInstance(const Config::AppConfiguration& config, const Config::AppConfiguration& address);
-        ~AppInstance();
+        AppInstance(const configurations::AppConfiguration& config,
+            const configurations::AppAddresses& address);
+        ~AppInstance() = default;
 
     private:
-        void initService(const Config::AppConfiguration& config);
+        void initService(const configurations::AppConfiguration& config);
 
     private:
-        std::unique_ptr<Game::IManagementJob> m_ptrManagement;
+        zmq::context_t       m_zmqContext;
+        sockets::ZmqReceiver m_zmqReceiver;
+        games::ManagementJob m_Management;
+        sockets::ServiceReceiver m_ServiceReceiver;
+        UserApp m_userApp;
     };
 }

@@ -4,13 +4,13 @@
 #include <memory>
 #include <map>
 #include "games/IManagementJob.hpp"
-#include "DefineView.hpp"
+#include "configurations/DefineView.hpp"
 
-namespace Game
+namespace games
 {
     class Job;
     using gameJobPrt = std::unique_ptr<IJob>;
-    using namespace Define;
+    using namespace configurations;
 
     class ManagementJob : public IManagementJob
     {

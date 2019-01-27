@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include "DefineView.hpp"
+#include "configurations/DefineView.hpp"
 
-namespace Game
+namespace games
 {
-    using namespace Define;
+    using namespace configurations;
 
     class IJob
     {

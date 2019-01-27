@@ -1,7 +1,7 @@
 #pragma once
 #include "Job.hpp"
 
-namespace Game
+namespace games
 {
     class IManagementJob
     {

@@ -7,8 +7,8 @@
 #include <QtCore/QCoreApplication>
 #include <boost/exception/diagnostic_information.hpp>
 #include "configurations/AppConfiguration.hpp"
+#include "configurations/DefineView.hpp"
 #include "applications/AppInstance.hpp"
-#include "LeelaControl.hpp"
-#include "ParseHelp.hpp"
+#include "helps/ParseHelp.hpp"
 
 // TODO: 在此处引用程序需要的其他标头。

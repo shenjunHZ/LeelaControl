@@ -6,16 +6,16 @@
 #include <QtCore/QProcess>
 #include <QtCore/QString>
 #include <tuple>
-#include "DefineView.hpp"
+#include "configurations/DefineView.hpp"
 
 namespace
 {
     using VersionTuple = std::tuple<int, int, int>;
 }
 
-namespace Game
+namespace games
 {
-    using namespace Define;
+    using namespace configurations;
     class GameLeela : public QProcess
     {
     public:
@@ -26,14 +26,15 @@ namespace Game
         GameLeela(const std::string& binary, const std::string& opt,
             const std::string& weights, const std::vector<std::string>& commands);
         ~GameLeela() = default;
+
         bool gameStart(const VersionTuple& minVersion);
+        bool sendGtpCommand(QString cmd);
 
     private:
         void recordError(const errorInfo& error);
         void checkStatus(const VersionTuple &minVersion);
         bool waitReady();
         bool eatNewLine();
-        bool sendGtpCommand(QString cmd);
 
     private:
         std::string m_strBinary;

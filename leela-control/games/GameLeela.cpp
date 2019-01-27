@@ -5,15 +5,15 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "games/GameLeela.hpp"
-#include "DefineView.hpp"
+#include "configurations/DefineView.hpp"
 
 namespace
 {
     constexpr int WAIT_GTP_INITIALIZE = 1000 * 1000 * 20;
 }
-namespace Game
+namespace games
 {
-    using namespace Define;
+    using namespace configurations;
 
     GameLeela::GameLeela(const std::string& binary, const std::string& opt, 
         const std::string& weights, const std::vector<std::string>& commands)

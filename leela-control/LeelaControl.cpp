@@ -12,19 +12,20 @@ int main(int argc, char* argv[])
     app.setApplicationVersion(QString("V: ").arg(LEELA_CONTROL_VERSION));
 
     boost::program_options::variables_map cmdParams;
-    Help::parseProgramOptions(argc, argv, cmdParams);
+    helps::parseProgramOptions(argc, argv, cmdParams);
 
     try
     {
-        Config::AppConfiguration configParams =
-            Config::loadFromIniFile(cmdParams["config-file"].as<std::string>());
-        const Config::AppConfiguration addresses;
-       //Config::runApp(configParams, addresses);
-        App::AppInstance appInstance(configParams, addresses);
+        configurations::AppConfiguration configParams =
+            configurations::loadFromIniFile(cmdParams["config-file"].as<std::string>());
+        const configurations::AppAddresses addresses = helps::getAppAddresses(configParams);
+
+        std::cout << "Info: " << "Leela Control App Start up." << std::endl;
+        applications::AppInstance appInstance(configParams, addresses);
     }
     catch (const std::exception& e)
     {
-        QTextStream(stdout) << QString::fromStdString(boost::diagnostic_information(e)) << endl;
+        std::cout << "Error: " << boost::diagnostic_information(e) << std::endl;
         return EXIT_FAILURE;
     }
 

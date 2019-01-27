@@ -1,6 +1,7 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <fstream>
+#include <iostream>
 #include "AppConfiguration.hpp"
 #include "applications/AppInstance.hpp"
 
@@ -12,8 +13,18 @@ namespace
         using boost::program_options::value;
 
         description.add_options()
-            (Config::leelaPath, value<std::string>()->default_value("./"), "leela zero execute path")
-            (Config::enableLeelaLog, value<bool>()->default_value(false), "enable leela zero log");
+            (configurations::leelaPath, value<std::string>()->default_value("./"), "leela zero execute path")
+            (configurations::enableLeelaLog, value<bool>()->default_value(false), "enable leela zero log")
+            (configurations::serviceAddress, value<std::string>()->required(), "leela control service address")
+            (configurations::enableLeelaLevel_1, value<bool>()->default_value(false), "leela engine level 1")
+            (configurations::enableLeelaLevel_2, value<bool>()->default_value(false), "leela engine level 2")
+            (configurations::enableLeelaLevel_3, value<bool>()->default_value(false), "leela engine level 3")
+            (configurations::enableLeelaLevel_4, value<bool>()->default_value(false), "leela engine level 4")
+            (configurations::enableLeelaLevel_5, value<bool>()->default_value(false), "leela engine level 5")
+            (configurations::enableLeelaLevel_6, value<bool>()->default_value(false), "leela engine level 6")
+            (configurations::enableLeelaLevel_7, value<bool>()->default_value(false), "leela engine level 7")
+            (configurations::enableLeelaLevel_8, value<bool>()->default_value(false), "leela engine level 8")
+            (configurations::enableLeelaLevel_9, value<bool>()->default_value(false), "leela engine level 9");
 
 
         return description;
@@ -31,29 +42,22 @@ namespace
         }
         catch (const po::error& e)
         {
-            QTextStream(stdout) << "Parsing the config file failed: " << e.what() << endl;
+            std::cout << "Error: " << "Parsing the config file failed: " << e.what() << std::endl;
             throw;
         }
         return appConfig;
     }
 } // namespace
 
-namespace Config
+namespace configurations
 {
 
-    Config::AppConfiguration loadFromIniFile(const std::string& configFile)
+    configurations::AppConfiguration loadFromIniFile(const std::string& configFile)
     {
         std::ifstream configFileStream{ configFile };
         AppConfiguration configuration{ { parseProgramOptions(configFileStream) } };
 
         return configuration;
-    }
-
-    void runApp(const AppConfiguration& configParams, const AppConfiguration& addresses)
-    {
-        QTextStream(stdout) << "start to run app" << endl;
-
-        App::AppInstance appInstance(configParams, addresses);
     }
 
 }

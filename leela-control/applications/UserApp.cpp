@@ -14,7 +14,7 @@ namespace applications
 	UserApp::UserApp(games::IManagementJob& managementJob)
 		: m_managementJob{managementJob}
 	{
-
+		std::cout << "Debug: " << "create user app." << std::endl;
 	}
 
 	UserApp::~UserApp()

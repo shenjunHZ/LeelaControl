@@ -98,8 +98,11 @@ if(${WIN_ENV})
 elseif(${ARM_LINUX})
     target_link_libraries(${EXECUTABLE_NAME}
             PRIVATE
-                ${Boost_LIBRARIES}
                 ${Qt5Core_LIBRARIES}
+                boost_program_options
+                boost_thread
+                boost_system
+                boost_filesystem
                 zmq
     )
 elseif(${GCC_LINUX})

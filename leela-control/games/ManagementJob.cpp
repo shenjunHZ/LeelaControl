@@ -9,6 +9,7 @@ namespace games
         , m_enableGTPEngine{true}
         , m_enableLeelaLog{enableLeelaLog}
     {
+        std::cout << "Debug: " << "start management job." << std::endl;
         m_gameJobs.clear();
     }
 

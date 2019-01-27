@@ -35,6 +35,7 @@ namespace games
         void checkStatus(const VersionTuple &minVersion);
         bool waitReady();
         bool eatNewLine();
+        std::string getCurrentTime();
 
     private:
         std::string m_strBinary;

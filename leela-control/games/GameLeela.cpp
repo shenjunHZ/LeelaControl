@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <time.h>
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
@@ -32,6 +33,15 @@ namespace games
             recordError(errorInfo::ERROR_NO_LEELAZ);
         }
         m_cmdLine = m_strBinary + " " + opt + weights;
+    }
+
+    std::string GameLeela::getCurrentTime()
+    {
+        std::time_t currentTime;
+        std::time(&currentTime);
+        char cTime[64];
+        std::strftime(cTime, sizeof(cTime), "%Y-%m-%d %H:%M:%S", std::localtime(&currentTime));
+        return std::string{cTime};
     }
 
     void GameLeela::recordError(const errorInfo& error)
@@ -116,6 +126,7 @@ namespace games
         char readBuffer[256];
         int readCount = readLine(readBuffer, 256);
 
+        std::cout << "Debug: " << getCurrentTime() << std::endl;
         QTextStream(stdout) << "GTP: " << readBuffer << endl;
         if (readCount <= 0 || readBuffer[0] != '=')
         {

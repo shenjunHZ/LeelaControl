@@ -89,6 +89,7 @@ namespace helps
         const std::string& zmqAddress,
         const std::function<std::string(const std::string&)>& hostNameResolver /*= boostAsioBasedHostNameResolver*/)
     {
+        std::cout << "Debug: " << "bind service address " << zmqAddress << std::endl;
         std::smatch matched;
         if (zmqAddress.find(tcpPrefix) != std::string::npos)
         {

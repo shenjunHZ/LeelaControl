@@ -24,26 +24,55 @@ elseif(${ARM_LINUX})
     include_directories(${Qt5Core_INCLUDE_DIRS})
     message("qt include path ${Qt5Core_INCLUDE_DIRS}")
 
+elseif(${GCC_LINUX})
+    INCLUDE_DIRECTORIES(
+        /ephemeral/junshen/development/tools/Qt5.7.1/5.7/gcc_64/include
+        /ephemeral/junshen/development/tools/boost_1_65_1/gcc_bin/include
+        /ephemeral/junshen/development/tools/zeromq-4.3.1/gcc/include
+        /ephemeral/junshen/development/tools/zmqHelp
+    )
+
+    LINK_DIRECTORIES(
+        /ephemeral/junshen/development/tools/Qt5.7.1/5.7/gcc_64/lib
+        /ephemeral/junshen/development/tools/boost_1_65_1/gcc_bin/lib
+        /ephemeral/junshen/development/tools/zeromq-4.3.1/gcc/lib
+    )
 endif()
+
 set(IncludePath "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # add source to execute
 set (SOURCES
      applications/AppInstance.cpp
+     applications/UserApp.cpp
      configurations/AppConfiguration.cpp
      games/GameLeela.cpp
      games/ManagementJob.cpp
      games/Job.cpp
+     helps/ParseHelp.cpp
+     sockets/ZmqReceiver.cpp
+     sockets/ServiceReceiver.cpp
      LeelaControl.cpp
-)
+    )
+
 set(INCLUDE
-     LeelaControl.hpp
-     ParseHelp.hpp
-     games/ManagementJob.hpp
-     games/GameLeela.hpp
-     games/IJob.hpp
-     games/Job.hpp
-        sockets/ServiceSocket.hpp sockets/ISocket.hpp applications/ServiceContext.hpp)
+    applications/AppInstance.hpp
+    applications/UserApp.hpp
+    configurations/AppConfiguration.hpp
+    configurations/DefineView.hpp
+    games/IManagementJob.hpp
+    games/ManagementJob.hpp
+    games/GameLeela.hpp
+    games/IJob.hpp
+    games/Job.hpp
+    helps/ParseHelp.hpp
+    sockets/DescriptorPoller.hpp
+    sockets/ServiceReceiver.hpp
+    sockets/ZmqReceiver.hpp
+    sockets/ISocket.hpp
+    applications/ServiceContext.hpp
+    LeelaControl.hpp
+    )
 
 set(INCLUDEPATH
     ${CMAKE_CURRENT_LIST_DIR}
@@ -62,10 +91,18 @@ if(${WIN_ENV})
 elseif(${ARM_LINUX})
     target_link_libraries(${EXECUTABLE_NAME}
             PRIVATE
-            ${Boost_LIBRARIES}
-            boost_thread
-            ${Qt5Core_LIBRARIES}
+                ${Boost_LIBRARIES}
+                boost_thread
+                ${Qt5Core_LIBRARIES}
     )
+elseif(${GCC_LINUX})
+    target_link_libraries(${EXECUTABLE_NAME}
+        PRIVATE
+            boost_program_options
+            boost_thread
+            boost_system
+            ${Qt5Core_LIBRARIES}
+        )
 endif()
        
 

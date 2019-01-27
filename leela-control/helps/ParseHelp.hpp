@@ -1,6 +1,8 @@
 #pragma once
 #include <boost/program_options.hpp>
 #include <QtCore/QTextStream>
+#include <stdlib.h>
+#include "configurations/DefineView.hpp"
 
 namespace Help
 {
@@ -19,8 +21,8 @@ namespace Help
             }
             catch (boost::bad_lexical_cast& e)
             {
-                QTextStream(stdout) << "parseProgramOptions:lexical_cast Failed in  default_value";
-                QTextStream(stdout) << e.what() << endl;
+                std::cout << "Error: " << "parseProgramOptions:lexical_cast Failed in  default_value";
+                std::cout << e.what() << std::endl;
             }
 
             try
@@ -30,15 +32,21 @@ namespace Help
             }
             catch (const po::error& e)
             {
-                QTextStream(stdout) << e.what() << endl;
-                std::exit(EXIT_FAILURE);
+                std::cout << "Error: " << e.what() << std::endl;
+                exit(EXIT_FAILURE);
             }
 
             if (cmdParams.count("help") != 0)
             {
                 std::cout << optDescr << std::endl;
-                std::exit(EXIT_SUCCESS);
+                exit(EXIT_SUCCESS);
             }
         }
+    }
+
+    configurations::AppAddresses getAppAddresses(const boost::program_options::variables_map& cmdParams)
+    {
+        using namespace configurations::keys;
+        return configurations::AppAddresses{cmdParams[serviceAddress].as<std::string>()};
     }
 }

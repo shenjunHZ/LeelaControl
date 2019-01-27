@@ -13,9 +13,12 @@ elseif ($ENV{TARGET} MATCHES "arm-linux-gnueabihf")
     set(ARM_LINUX TRUE)
     add_definitions(-DRUN_IN_ARM)
     message(STATUS "==ARM LINUX==")
+else()
+    set(GCC_LINUX TRUE)
+    message(STATUS "==GCC LINUX==")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -lboost_thread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -lboost_thread -fPIC")
 
 set(USE_CPU_ONLY TRUE)
 

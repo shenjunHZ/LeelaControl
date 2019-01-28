@@ -5,14 +5,16 @@
 #pragma once
 #include <zmq.hpp>
 #include "configurations/AppConfiguration.hpp"
+#include "configurations/DefineView.hpp"
+#include "sockets/ZmqReceiver.hpp"
 
 namespace applications
 {
-class ServiceContext
+struct ServiceContext
 {
 public:
-    ServiceContext(const configurations::ApplicationConfiguration& config,
-        const configurations::AppAddress& addresses)
+    ServiceContext(const configurations::AppConfiguration& config,
+        const configurations::AppAddresses& addresses)
         : m_configParams{config}
         , m_addresses{addresses}
     {
@@ -20,8 +22,8 @@ public:
     }
 
     zmq::context_t m_zmqContext;
-    socket::ZmqReceiver m_zmqReceiver;
-    const configuration::AppAddress& m_addresses;
-    const configuration::ApplicationConfiguration& m_configParams;
+    sockets::ZmqReceiver m_zmqReceiver;
+    const configurations::AppAddresses& m_addresses;
+    const configurations::AppConfiguration& m_configParams;
 };
 } // namespace applications

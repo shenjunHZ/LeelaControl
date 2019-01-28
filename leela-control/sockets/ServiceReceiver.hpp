@@ -25,9 +25,8 @@ private:
     void processEvent(const zmq::message_t&, const std::string&);
 
 private:
-    zmq::socket_t m_serviceSocket;
-    std::string m_serviceAddress;
-    zmq::context_t& m_context;
+    zmq::socket_t  m_serviceSocket;
+    std::string    m_serviceAddress;
     ZmqReceiver& m_zmqReceiver;
 	applications::UserApp& m_userApp;
 };

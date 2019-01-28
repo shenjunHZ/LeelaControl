@@ -5,7 +5,7 @@
 #pragma once
 #include "configurations/AppConfiguration.hpp"
 #include "configurations/DefineView.hpp"
-#include "games/IManagementJob.hpp"
+#include "games/ManagementJob.hpp"
 
 namespace applications
 {

@@ -9,6 +9,7 @@
 #include "configurations/AppConfiguration.hpp"
 #include "configurations/DefineView.hpp"
 #include "applications/AppInstance.hpp"
+#include "applications/ServiceContext.hpp"
 #include "helps/ParseHelp.hpp"
 
 // TODO: 在此处引用程序需要的其他标头。

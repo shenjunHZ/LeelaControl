@@ -98,15 +98,15 @@ namespace applications
 {
     using namespace configurations;
 
-    AppInstance::AppInstance(const configurations::AppConfiguration& config,
-        const configurations::AppAddresses& address)
-        : m_zmqContext{}
-        , m_zmqReceiver{}
-        , m_Management{getLeelaPath(config), isEnableLeelaLog(config)}
+    AppInstance::AppInstance(applications::ServiceContext& serviceContext)
+        : m_Management{getLeelaPath(serviceContext.m_configParams), isEnableLeelaLog(serviceContext.m_configParams)}
         , m_userApp{m_Management}
-        , m_ServiceReceiver{m_zmqReceiver, m_zmqContext, helps::createBindableAddress(address.serviceAddress), m_userApp}
+        , m_ServiceReceiver{serviceContext.m_zmqReceiver,
+							serviceContext.m_zmqContext,
+							helps::createBindableAddress(serviceContext.m_addresses.serviceAddress),
+							m_userApp}
     {
-        initService(config);
+        initService(serviceContext.m_configParams);
     }
 
     void AppInstance::initService(const configurations::AppConfiguration& config)
@@ -119,8 +119,6 @@ namespace applications
                 m_Management.createJobLeela(static_cast<leelaStarLevel>(index));
             }
         }
-
-        m_zmqReceiver.receiveLoop();
     }
 
 }

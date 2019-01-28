@@ -11,9 +11,8 @@ namespace sockets
                                      zmq::context_t& context,
                                      const std::string& serviceAddress,
                                      applications::UserApp& userApp)
-        : m_serviceSocket{m_context, zmq::socket_type::pull}
+        : m_serviceSocket{context, zmq::socket_type::pull}
         , m_zmqReceiver{zmqReceiver}
-        , m_context{context}
         , m_serviceAddress{serviceAddress}
         , m_userApp{userApp}
     {

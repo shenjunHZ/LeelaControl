@@ -5,6 +5,7 @@
 
 #define LEELA_CONFIG_PREFIX "leela"
 #define ADDRESSER_PREFIX    "addresses"
+#define LOGGER_PREFIX       "logger"
 
 namespace configurations
 {
@@ -22,6 +23,8 @@ namespace configurations
     constexpr auto waitLeelazStartTimes = LEELA_CONFIG_PREFIX ".waitLeelazStartTimes";
 
     constexpr auto serviceAddress = ADDRESSER_PREFIX ".serviceAddress";
+
+    constexpr auto loggerLevel = LOGGER_PREFIX ".loggerLevel";
 
     using AppConfiguration = boost::program_options::variables_map;
 

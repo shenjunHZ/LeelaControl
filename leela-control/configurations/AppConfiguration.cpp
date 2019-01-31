@@ -25,7 +25,8 @@ namespace
             (configurations::enableLeelaLevel_7, value<bool>()->default_value(false), "leela engine level 7")
             (configurations::enableLeelaLevel_8, value<bool>()->default_value(false), "leela engine level 8")
             (configurations::enableLeelaLevel_9, value<bool>()->default_value(false), "leela engine level 9")
-            (configurations::waitLeelazStartTimes, value<int>()->default_value(10), "wait leela zero init weight file");
+            (configurations::waitLeelazStartTimes, value<int>()->default_value(10), "wait leela zero init weight file")
+            (configurations::loggerLevel, value<int>()->default_value(1), "output logger level Debug=1");
 
 
         return description;

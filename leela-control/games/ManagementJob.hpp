@@ -9,22 +9,24 @@
 namespace games
 {
     class Job;
-    using gameJobPrt = std::unique_ptr<IJob>;
+    using gameJobPtr = std::unique_ptr<IJob>;
     using namespace configurations;
 
     class ManagementJob : public IManagementJob
     {
     public:
-        ManagementJob(const std::string& binary, const bool& enableLeelaLog);
+        ManagementJob(const std::string& binary, const bool& enableLeelaLog, spdlog::logger& logger);
         ~ManagementJob();
 
         void createJobLeela(const leelaStarLevel& level) override;
+        void startJobLeela(const leelaStarLevel& level) override;
         const IJob& getJob(const leelaStarLevel& level) override;
 
     private:
         std::string m_binaryPath;
         bool m_enableGTPEngine;
         bool m_enableLeelaLog;
-        std::map<leelaStarLevel, gameJobPrt> m_gameJobs;
+        std::map<leelaStarLevel, gameJobPtr> m_gameJobs;
+        spdlog::logger& m_logger;
     };
 }

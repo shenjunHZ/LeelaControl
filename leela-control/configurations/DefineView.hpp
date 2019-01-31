@@ -12,7 +12,7 @@ namespace configurations
 
     enum class leelaStarLevel
     {
-        STAR_LEVEL_1,
+        STAR_LEVEL_1 = 0,
         STAR_LEVEL_2,
         STAR_LEVEL_3,
         STAR_LEVEL_4,

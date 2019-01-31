@@ -16,18 +16,21 @@ namespace
 
 namespace games
 {
-    Job::Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog)
+    Job::Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog, spdlog::logger& logger)
         : m_enableGTPEngine{enableGTPEngine}
         , m_binaryPath{binary}
         , m_gameLeela{nullptr}
         , m_enableLeelaLog{enableLeelaLog}
+        , m_logger{logger}
+        , m_strOption{""}
+        , m_strWeight{""}
     {
         inputDefaultCommand();
     }
 
     Job::~Job()
     {
-        //if(m_threadGame.joinable())
+        if(m_threadGame.joinable())
         {
             m_threadGame.join();
         }
@@ -40,25 +43,24 @@ namespace games
 
     void Job::inputDefaultCommand()
     {
-        m_defaultCommands.push_back("name");
-        m_defaultCommands.push_back("version");
+        m_defaultCommands.emplace_back("name");
+        m_defaultCommands.emplace_back("version");
         /*this is set so that the time value is not calculated by the machine
         as the development board resource limited*/
-        m_defaultCommands.push_back("time_settings 0 0 1");
+        m_defaultCommands.emplace_back("time_settings 0 0 1");
     }
 
-    void Job::createGameLeela(const leelaStarLevel& level)
+    void Job::createJobParameter(const leelaStarLevel& level)
     {
-        std::string strOption = "";
         if (isEnableGTPEngine())
         {
-            strOption += "-g ";
+            m_strOption += "-g ";
         }
         if(m_enableLeelaLog)
         {
-            strOption += "--logfile " + m_binaryPath + "leelaz.log ";
+            m_strOption += "--logfile " + m_binaryPath + "leelaz.log ";
         }
-        std::string strWeight = "-w ";
+        m_strWeight = "-w ";
 
         switch (level)
         {
@@ -69,8 +71,8 @@ namespace games
             case leelaStarLevel::STAR_LEVEL_3:
                 break;
             case leelaStarLevel::STAR_LEVEL_4:
-                strWeight += m_binaryPath + "leelaz120.gz ";
-                break;
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
+                return;
             case leelaStarLevel::STAR_LEVEL_5:
                 break;
             case leelaStarLevel::STAR_LEVEL_6:
@@ -81,15 +83,17 @@ namespace games
                 break;
             case leelaStarLevel::STAR_LEVEL_9:
                 break;
-            default:
-                strWeight += "leelaz120.gz ";
-                break;
         }
-        m_gameLeela = std::make_unique<GameLeela>(m_binaryPath + "leelaz", strOption, strWeight, m_defaultCommands);
+        m_strWeight += m_binaryPath + "leelaz120.gz ";
     }
 
     void Job::runGame()
     {
+        std::tuple<int, int, int> version{ 0, 0, 1 };
+        m_gameLeela = std::make_unique<GameLeela>(m_binaryPath + "leelaz", m_strOption, m_strWeight, m_defaultCommands, m_logger);
+        /* QProcess need with GameLeela instantiation thread */
+        m_gameLeela->gameStart(version);
+
         while(keep_running)
         {
             std::unique_lock<std::mutex> lock(m_mutex);
@@ -101,19 +105,25 @@ namespace games
             m_gameLeela->sendGtpCommand(commend);
             m_commends.pop();
 
-            if(m_commends.empty())
-            {
-                gameB();
-                usleep(1000 * 10);
-            }
+//            if(m_commends.empty())
+//            {
+//                if(0 == testTimes)
+//                {
+//                    gameB();
+//                    testTimes++;
+//                }
+//                if(1 == testTimes)
+//                {
+//                    std::cout<<"end game"<<std::endl;
+//                }
+//                usleep(1000 * 10);
+//            }
         }
     }
 
     void Job::startGameLeela()
     {
-        gameA();
-        std::tuple<int, int, int> version{ 0, 0, 1 };
-        m_gameLeela->gameStart(version); // QProcess need with main thread
+        LOG_INFO_MSG(m_logger, "start leela game.");
 
         boost::function<void()> fun = boost::bind(&Job::runGame, this);
         m_threadGame = boost::thread(fun);
@@ -122,7 +132,8 @@ namespace games
 /***********************just for test************************/
     void Job::gameA()
     {
-        m_commends.push("quit");
+        std::cout<<"start game a"<<std::endl;
+        //m_commends.push("quit");
         m_commends.push("version");
         m_commends.push("boardsize 19");
         m_commends.push("clear_board");
@@ -215,16 +226,16 @@ namespace games
         m_commends.push("play B H3");
         m_commends.push("play W H1");
 
-        m_commends.push("play B I19");
-        m_commends.push("play W I17");
-        m_commends.push("play B I15");
-        m_commends.push("play W I13");
-        m_commends.push("play B I11");
-        m_commends.push("play W I9");
-        m_commends.push("play B I7");
-        m_commends.push("play W I5");
-        m_commends.push("play B I3");
-        m_commends.push("play W I1");
+//        m_commends.push("play B I19");
+//        m_commends.push("play W I17");
+//        m_commends.push("play B I15");
+//        m_commends.push("play W I13");
+//        m_commends.push("play B I11");
+//        m_commends.push("play W I9");
+//        m_commends.push("play B I7");
+//        m_commends.push("play W I5");
+//        m_commends.push("play B I3");
+//        m_commends.push("play W I1");
 
         m_commends.push("play B J19");
         m_commends.push("play W J17");
@@ -353,7 +364,8 @@ namespace games
 
     void Job::gameB()
     {
-        m_commends.push("quit");
+        std::cout<<"start game b"<<std::endl;
+        //m_commends.push("quit");
         m_commends.push("version");
         m_commends.push("boardsize 19");
         m_commends.push("clear_board");
@@ -446,16 +458,16 @@ namespace games
         m_commends.push("play B H3");
         m_commends.push("play W H1");
 
-        m_commends.push("play B I19");
-        m_commends.push("play W I17");
-        m_commends.push("play B I15");
-        m_commends.push("play W I13");
-        m_commends.push("play B I11");
-        m_commends.push("play W I9");
-        m_commends.push("play B I7");
-        m_commends.push("play W I5");
-        m_commends.push("play B I3");
-        m_commends.push("play W I1");
+//        m_commends.push("play B I19");
+//        m_commends.push("play W I17");
+//        m_commends.push("play B I15");
+//        m_commends.push("play W I13");
+//        m_commends.push("play B I11");
+//        m_commends.push("play W I9");
+//        m_commends.push("play B I7");
+//        m_commends.push("play W I5");
+//        m_commends.push("play B I3");
+//        m_commends.push("play W I1");
 
         m_commends.push("play B J19");
         m_commends.push("play W J17");

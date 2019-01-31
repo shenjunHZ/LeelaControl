@@ -1,8 +1,5 @@
 #include <bitset>
 #include "AppInstance.hpp"
-#include "games/ManagementJob.hpp"
-#include "configurations/DefineView.hpp"
-#include "sockets/ServiceReceiver.hpp"
 #include "helps/ParseHelp.hpp"
 
 namespace
@@ -99,7 +96,9 @@ namespace applications
     using namespace configurations;
 
     AppInstance::AppInstance(applications::ServiceContext& serviceContext)
-        : m_Management{getLeelaPath(serviceContext.m_configParams), isEnableLeelaLog(serviceContext.m_configParams)}
+        : m_Management{getLeelaPath(serviceContext.m_configParams),
+                       isEnableLeelaLog(serviceContext.m_configParams),
+                       serviceContext.m_logger}
         , m_userApp{m_Management}
         , m_ServiceReceiver{serviceContext.m_zmqReceiver,
 							serviceContext.m_zmqContext,
@@ -117,6 +116,7 @@ namespace applications
             if(bitSet.test(index))
             {
                 m_Management.createJobLeela(static_cast<leelaStarLevel>(index));
+                m_Management.startJobLeela(static_cast<leelaStarLevel>(index));
             }
         }
     }

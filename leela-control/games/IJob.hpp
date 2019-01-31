@@ -14,7 +14,7 @@ namespace games
     {
     public:
         virtual ~IJob() = default;
-        virtual void createGameLeela(const leelaStarLevel& level) = 0;
+        virtual void createJobParameter(const leelaStarLevel& level) = 0;
         virtual void startGameLeela() = 0;
     };
 };

@@ -17,11 +17,13 @@ namespace games
     using namespace configurations;
 
     GameLeela::GameLeela(const std::string& binary, const std::string& opt, 
-        const std::string& weights, const std::vector<std::string>& commands)
+        const std::string& weights, const std::vector<std::string>& commands,
+        spdlog::logger& logger)
         : QProcess()
         , m_strBinary{binary}
         , m_cmdLine{""}
         , m_commands{commands}
+        , m_logger{logger}
     {
  #ifdef WIN32
          m_strBinary.append(".exe");
@@ -29,7 +31,6 @@ namespace games
         boost::filesystem::path pathFile(m_strBinary);
         if (! (boost::filesystem::exists(pathFile) && boost::filesystem::is_regular_file(pathFile)))
         {
-            // to do log
             recordError(errorInfo::ERROR_NO_LEELAZ);
         }
         m_cmdLine = m_strBinary + " " + opt + weights;
@@ -46,21 +47,19 @@ namespace games
 
     void GameLeela::recordError(const errorInfo& error)
     {
-        // to do log
-        QTextStream(stdout) << "ERROR:";
         switch (error)
         {
         case errorInfo::ERROR_NO_LEELAZ:
-            QTextStream(stdout) << "No 'leelaz' binary found." << endl;
+            LOG_ERROR_MSG("No 'leelaz' binary found.");
             break;
         case errorInfo::ERROR_LAUNCH:
-            QTextStream(stdout) << "Could not talk to engine after launching." << endl;
+            LOG_ERROR_MSG("Could not talk to engine after launching.");
             break;
         case errorInfo::ERROR_PROCESS:
-            QTextStream(stdout) << "The 'leelaz' process died unexpected." << endl;
+            LOG_ERROR_MSG("The 'leelaz' process died unexpected.");
             break;
         case errorInfo::ERROR_GTP:
-            QTextStream(stdout) << "Error in GTP response." << endl;
+            LOG_ERROR_MSG("Error in GTP response.");
             break;
         }
     }
@@ -68,7 +67,7 @@ namespace games
     void GameLeela::checkStatus(const VersionTuple &minVersion)
     {
         usleep(WAIT_GTP_INITIALIZE);
-        //write(qPrintable("version\n"));
+        write(qPrintable("version\n"));
         //QTextStream(stdout) << "version:" << endl;
         waitForBytesWritten(-1);
         if (!waitReady()) 
@@ -76,9 +75,11 @@ namespace games
             recordError(errorInfo::ERROR_LAUNCH);
             exit(EXIT_FAILURE);
         }
+
         char readBuffer[256];
         int readCount = read(readBuffer, 256); // IO read, have some starting message need to read
-        std::cout << readBuffer << std::endl;
+
+        LOG_DEBUG_MSG("Read leela zero version Info: {}", readBuffer);
     }
 
     bool GameLeela::waitReady()
@@ -144,7 +145,8 @@ namespace games
     bool GameLeela::gameStart(const VersionTuple& minVersion)
     {
         start(QString::fromStdString(m_cmdLine)); // use QProcess
-        std::cout << "cmd line========" << m_cmdLine.c_str() << std::endl;
+        LOG_DEBUG_MSG("Start command: {}", m_cmdLine.c_str());
+
         /*wait for process start*/
         if (!waitForStarted())
         {

@@ -12,6 +12,7 @@
 #include <boost/thread/thread.hpp>
 #include <QtCore/QString>
 #include "IJob.hpp"
+#include "logger/Logger.hpp"
 
 namespace games
 {
@@ -20,9 +21,9 @@ namespace games
     class Job : public IJob
     {
     public:
-        Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog);
+        Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog, spdlog::logger& logger);
         ~Job();
-        void createGameLeela(const configurations::leelaStarLevel& level) override;
+        void createJobParameter(const configurations::leelaStarLevel& level) override;
         void startGameLeela() override;
 
     private:
@@ -38,6 +39,7 @@ namespace games
 	private:
 		void gameA();
 		void gameB();
+		int testTimes{0};
 
     private:
         bool m_enableGTPEngine;
@@ -49,6 +51,9 @@ namespace games
         std::condition_variable m_condition;
 		mutable std::mutex m_mutex;
         boost::thread m_threadProcess;
+		spdlog::logger& m_logger;
+        std::string m_strOption;
+        std::string m_strWeight;
 
         std::queue<QString> m_commends;
     };

@@ -26,7 +26,9 @@ namespace
             (configurations::enableLeelaLevel_8, value<bool>()->default_value(false), "leela engine level 8")
             (configurations::enableLeelaLevel_9, value<bool>()->default_value(false), "leela engine level 9")
             (configurations::waitLeelazStartTimes, value<int>()->default_value(10), "wait leela zero init weight file")
-            (configurations::loggerLevel, value<int>()->default_value(1), "output logger level Debug=1");
+            (configurations::loggerLevel, value<int>()->default_value(1), "output logger level Debug=1")
+            (configurations::maxFileSize, value<int>()->default_value(3 * 1024 *1024), "each rotate log file size")
+            (configurations::maxRotateFiles, value<int>()->default_value(3), "max rotate files");
 
 
         return description;

@@ -24,7 +24,9 @@ namespace configurations
 
     constexpr auto serviceAddress = ADDRESSER_PREFIX ".serviceAddress";
 
-    constexpr auto loggerLevel = LOGGER_PREFIX ".loggerLevel";
+    constexpr auto loggerLevel    = LOGGER_PREFIX ".loggerLevel";
+    constexpr auto maxFileSize    = LOGGER_PREFIX ".maxFileSize";
+    constexpr auto maxRotateFiles = LOGGER_PREFIX ".maxRotateFiles";
 
     using AppConfiguration = boost::program_options::variables_map;
 

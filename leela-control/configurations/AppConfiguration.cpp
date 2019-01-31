@@ -24,7 +24,8 @@ namespace
             (configurations::enableLeelaLevel_6, value<bool>()->default_value(false), "leela engine level 6")
             (configurations::enableLeelaLevel_7, value<bool>()->default_value(false), "leela engine level 7")
             (configurations::enableLeelaLevel_8, value<bool>()->default_value(false), "leela engine level 8")
-            (configurations::enableLeelaLevel_9, value<bool>()->default_value(false), "leela engine level 9");
+            (configurations::enableLeelaLevel_9, value<bool>()->default_value(false), "leela engine level 9")
+            (configurations::waitLeelazStartTimes, value<int>()->default_value(10), "wait leela zero init weight file");
 
 
         return description;

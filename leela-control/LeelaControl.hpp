@@ -11,5 +11,6 @@
 #include "applications/AppInstance.hpp"
 #include "applications/ServiceContext.hpp"
 #include "helps/ParseHelp.hpp"
+#include "logger/Logger.hpp"
 
 // TODO: 在此处引用程序需要的其他标头。

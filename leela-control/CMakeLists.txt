@@ -44,6 +44,20 @@ elseif(${GCC_LINUX})
         /ephemeral/junshen/development/tools/boost_1_65_1/gcc_bin/lib
         /ephemeral/junshen/development/tools/zeromq-4.3.1/gcc/lib
     )
+else()
+    INCLUDE_DIRECTORIES(
+            /home/shenjun/tools/Qt5.7.1/5.7/gcc_64/include
+            /home/shenjun/tools/boost_1_65_1/gcc_bin/include
+            /home/shenjun/tools/zeromq-4.3.1/gcc/include
+            /home/shenjun/tools/zmqHelp
+            /home/shenjun/tools/spdlog-1.x/include
+    )
+
+    LINK_DIRECTORIES(
+            /home/shenjun/tools/Qt5.7.1/5.7/gcc_64/lib
+            /home/shenjun/tools/boost_1_65_1/gcc_bin/lib
+            /home/shenjun/tools/zeromq-4.3.1/gcc/lib
+    )
 endif()
 
 set(IncludePath "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -95,17 +109,7 @@ if(${WIN_ENV})
             boost_system-vc140-mt-1_65
             Qt5Core
     )
-elseif(${ARM_LINUX})
-    target_link_libraries(${EXECUTABLE_NAME}
-            PRIVATE
-                ${Qt5Core_LIBRARIES}
-                boost_program_options
-                boost_thread
-                boost_system
-                boost_filesystem
-                zmq
-    )
-elseif(${GCC_LINUX})
+else()
     target_link_libraries(${EXECUTABLE_NAME}
         PRIVATE
             boost_program_options
@@ -114,9 +118,10 @@ elseif(${GCC_LINUX})
             boost_filesystem
             zmq
             Qt5Core
+            logger
         )
 endif()
        
-
+add_subdirectory(logger)
 
 # TODO: 如有需要，请添加测试并安装目标。

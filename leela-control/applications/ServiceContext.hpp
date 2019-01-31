@@ -7,6 +7,7 @@
 #include "configurations/AppConfiguration.hpp"
 #include "configurations/DefineView.hpp"
 #include "sockets/ZmqReceiver.hpp"
+#include "logger/Logger.hpp"
 
 namespace applications
 {
@@ -14,9 +15,11 @@ struct ServiceContext
 {
 public:
     ServiceContext(const configurations::AppConfiguration& config,
-        const configurations::AppAddresses& addresses)
+        const configurations::AppAddresses& addresses,
+                   spdlog::logger& logger)
         : m_configParams{config}
         , m_addresses{addresses}
+        , m_logger{logger}
     {
 
     }
@@ -25,5 +28,6 @@ public:
     sockets::ZmqReceiver m_zmqReceiver;
     const configurations::AppAddresses& m_addresses;
     const configurations::AppConfiguration& m_configParams;
+    spdlog::logger& m_logger;
 };
 } // namespace applications

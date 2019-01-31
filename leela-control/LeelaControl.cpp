@@ -20,15 +20,16 @@ int main(int argc, char* argv[])
             configurations::loadFromIniFile(cmdParams["config-file"].as<std::string>());
         const configurations::AppAddresses addresses = helps::getAppAddresses(configParams);
 
-        std::cout << "Info: " << "Leela Control Program Start up." << std::endl;
-        applications::ServiceContext serviceContext{configParams, addresses};
+        spdlog::logger& logger = logger::getLogger();
+        LOG_INFO_MSG(logger, "Leela Control Program Start up.");
+        applications::ServiceContext serviceContext{configParams, addresses, logger};
 
         applications::AppInstance appInstance(serviceContext);
         serviceContext.m_zmqReceiver.receiveLoop();
     }
     catch (const std::exception& e)
     {
-        std::cout << "Error: " << boost::diagnostic_information(e) << std::endl;
+        LOG_ERROR_MSG("{}", boost::diagnostic_information(e));
         return EXIT_FAILURE;
     }
 

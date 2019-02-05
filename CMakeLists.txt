@@ -6,19 +6,32 @@ cmake_minimum_required (VERSION 3.1)
 project ("LeelaControl")
 set(EXECUTABLE_NAME "LeelaControl")
 
-if(${CMAKE_C_COMPILER} MATCHES ".*Microsoft.*" )
+if(${CMAKE_C_COMPILER} MATCHES "MSVC" )
     set(WIN_ENV TRUE)
-    message(STATUS "==windows==")
+    add_definitions(-DWIN_ENV_RUN)
+    set(CMAKE_CXX_FLAGS_RELEASE "/MD")
+    set(CMAKE_CXX_FLAGS_DEBUG "/MDd")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Bin)
+
+    message(STATUS "==Windows environment==")
+
 elseif ($ENV{TARGET} MATCHES "arm-linux-gnueabihf")
     set(ARM_LINUX TRUE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -lboost_thread -fPIC -pthread")
     add_definitions(-DRUN_IN_ARM)
+
     message(STATUS "==ARM LINUX==")
+
 elseif($ENV{TARGET} MATCHES "gcc-linux")
     set(GCC_LINUX TRUE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -lboost_thread -fPIC -pthread")
+
     message(STATUS "==GCC LINUX==")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -lboost_thread -fPIC -pthread")
+
 
 set(USE_CPU_ONLY TRUE)
 

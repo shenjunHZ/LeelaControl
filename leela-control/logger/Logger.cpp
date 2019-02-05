@@ -7,6 +7,10 @@
 #include <spdlog/async.h>
 #include <spdlog/async_logger.h>
 
+namespace
+{
+    const std::string logger_name = "Leela_Control.log";
+}
 namespace logger
 {
     namespace
@@ -25,7 +29,7 @@ namespace logger
 
     spdlog::logger& getLogger()
     {
-        static auto logger = createLogger(program_invocation_short_name, spdlog::level::trace);
+        static auto logger = createLogger(logger_name, spdlog::level::trace);
         return *logger;
     }
 } // namespace logger

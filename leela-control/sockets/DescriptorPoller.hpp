@@ -7,7 +7,11 @@
 
 namespace types
 {
+#ifndef WIN_ENV_RUN
     using FileDescriptor = int;
+#else
+    using FileDescriptor = SOCKET;
+#endif
 }
 namespace sockets
 {

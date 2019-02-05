@@ -64,7 +64,7 @@ namespace sockets
 
     void ZmqReceiver::setState(const State newState)
     {
-        if (not isServiceStopped())
+        if (! isServiceStopped())
         {
             m_state = newState;
         }
@@ -112,7 +112,7 @@ namespace sockets
         std::vector<std::function<void()>> callbacks;
 
         m_state = State::updateRequired;
-        while (not isServiceStopped())
+        while (! isServiceStopped())
         {
             if (m_state == State::updateRequired)
             {
@@ -120,7 +120,7 @@ namespace sockets
                 setState(State::working);
             }
             m_wrapper.poll(pollItems);
-            for (auto i = 0u; i < pollItems.size() and m_state == State::working; ++i)
+            for (auto i = 0u; i < pollItems.size() && m_state == State::working; ++i)
             {
                 if (isReadyToRead(pollItems.at(i)))
                 {

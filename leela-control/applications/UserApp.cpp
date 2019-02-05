@@ -1,6 +1,11 @@
 //
 // Created by junshen on 1/26/19.
 //
+#ifndef WIN_ENV_RUN
+#include <unistd.h>
+#else
+#include <windows.h>
+#endif
 #include <iostream>
 #include <atomic>
 #include "UserApp.hpp"
@@ -63,7 +68,11 @@ namespace applications
 			m_messageDatas.pop();
 			if(data.message.empty())
 			{
-				usleep(1000 * 10);
+#ifdef WIN_ENV_RUN
+                Sleep(10);
+#else
+                usleep(1000 * 10);
+#endif
 			}
 		}
 	}

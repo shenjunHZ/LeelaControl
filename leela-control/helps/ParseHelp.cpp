@@ -14,7 +14,7 @@ namespace
 	{
 		boost::system::error_code ec;
 		const auto addr = boost::asio::ip::address::from_string(address, ec);
-		return not ec and not addr.is_unspecified();
+		return ! ec && ! addr.is_unspecified();
 	}
 }// namespace
 

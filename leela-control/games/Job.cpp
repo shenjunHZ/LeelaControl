@@ -3,7 +3,9 @@
 //
 #include <memory>
 #include <atomic>
+#ifndef WIN_ENV_RUN
 #include <unistd.h>
+#endif
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include "Job.hpp"

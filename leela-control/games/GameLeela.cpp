@@ -1,4 +1,8 @@
+#ifndef WIN_ENV_RUN
 #include <unistd.h>
+#else
+#include <windows.h>
+#endif
 #include <time.h>
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/filesystem.hpp>
@@ -10,7 +14,12 @@
 
 namespace
 {
-    constexpr int WAIT_GTP_INITIALIZE = 1000 * 1000 * 20;
+#ifndef WIN_ENV_RUN
+    constexpr int WAIT_GTP_INITIALIZE = 1000 * 1000 * 5;
+#else
+    /* in windows Sleep API in milliseconds*/
+    constexpr int WAIT_GTP_INITIALIZE = 1000 * 5;
+#endif
 }
 namespace games
 {
@@ -38,10 +47,17 @@ namespace games
 
     std::string GameLeela::getCurrentTime()
     {
-        std::time_t currentTime;
+        std::time_t currentTime(0);
+        struct tm nowTime;
         std::time(&currentTime);
+#ifdef WIN_ENV_RUN
+        localtime_s(&nowTime, &currentTime);
+#else
+        localtime_r(&currentTime, &nowTime);
+#endif // WIN_ENV_RUN
+
         char cTime[64];
-        std::strftime(cTime, sizeof(cTime), "%Y-%m-%d %H:%M:%S", std::localtime(&currentTime));
+        std::strftime(cTime, sizeof(cTime), "%Y-%m-%d %H:%M:%S", &nowTime);
         return std::string{cTime};
     }
 
@@ -66,7 +82,11 @@ namespace games
 
     void GameLeela::checkStatus(const VersionTuple &minVersion)
     {
+#ifdef WIN_ENV_RUN
+        Sleep(WAIT_GTP_INITIALIZE);
+#else
         usleep(WAIT_GTP_INITIALIZE);
+#endif
         write(qPrintable("version\n"));
         //QTextStream(stdout) << "version:" << endl;
         waitForBytesWritten(-1);

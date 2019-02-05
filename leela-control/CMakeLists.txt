@@ -3,13 +3,17 @@
 #
 if(${WIN_ENV})
     INCLUDE_DIRECTORIES(
-        "C:/Qt/Qt5.7.1(32)/5.7/msvc2015/include"
-        "D:/Develop_Code/Development/PabulumElement"
+        C:/Qt/Qt5.7.1_32/5.7/msvc2015/include
+        D:/Develop_Code/Open_Resource/boost_1_65_1
+        D:/Develop_Code/Open_Resource/zeromq-4.2.2/include
+        D:/Develop_Code/Open_Resource/zmqHelp
+        D:/Develop_Code/Open_Resource/spdlog-1.x/include
     )
-
+    # zmq need use dynamic, donot know why static failed
     LINK_DIRECTORIES(
-        "C:/Qt/Qt5.7.1(32)/5.7/msvc2015/lib"
-        "D:/Develop_Code/Development/PabulumElement/boost/boost_win32"
+        C:/Qt/Qt5.7.1_32/5.7/msvc2015/lib
+        D:/Develop_Code/Open_Resource/boost_1_65_1/lib32-msvc-14.1
+        D:/Develop_Code/Open_Resource/zeromq-4.2.2/bin/Win32/Release/v141/dynamic
     )
 elseif(${ARM_LINUX})
     # required packages
@@ -105,9 +109,9 @@ add_executable (${EXECUTABLE_NAME} ${SOURCES} ${INCLUDE})
 if(${WIN_ENV})
     target_link_libraries(${EXECUTABLE_NAME}
         PRIVATE
-            boost_program_options-vc140-mt-1_65
-            boost_system-vc140-mt-1_65
+            libzmq
             Qt5Core
+            logger
     )
 else()
     target_link_libraries(${EXECUTABLE_NAME}

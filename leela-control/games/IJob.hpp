@@ -9,6 +9,7 @@
 namespace games
 {
     using namespace configurations;
+    using resultCallback = std::function<void(const std::string&)>;
 
     class IJob
     {
@@ -16,5 +17,8 @@ namespace games
         virtual ~IJob() = default;
         virtual void createJobParameter(const leelaStarLevel& level) = 0;
         virtual void startGameLeela() = 0;
+        virtual void inputGTPCommand(const std::string& chassBoardID, const std::string& command,
+            const resultCallback&) = 0;
+        virtual void stopGameLeela() = 0;
     };
 };

@@ -1,0 +1,59 @@
+﻿{
+  "configurations": [
+    {
+      "name": "win-x64-Release",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [
+        "msvc_x64"
+      ],
+      "buildRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\build\\${name}",
+      "installRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": ""
+    },
+
+    {
+      "name": "linux-x64-release",
+      "generator": "Unix Makefiles",
+      "configurationType": "RelWithDebInfo",
+      //"configurationType": "Debug",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "/usr/bin/g++",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "CMAKE_C_COMPILER",
+          "value": "/usr/bin/gcc",
+          "type": "FILEPATH"
+        }
+      ],
+      "remoteMachineName": "ipqwcwt.zicp.vip",
+      "remoteCMakeListsRoot": "/home/khadas/development/remoteBuildRoot/LeelaControl_Demo",
+      "cmakeExecutable": "/usr/bin/cmake",
+      "remoteBuildRoot": "/home/khadas/development/remoteBuildRoot/LeelaControl_Demo/build/${name}",
+      "remoteInstallRoot": "/home/khadas/development/remoteBuildRoot/LeelaControl_Demo/install/${name}",
+      "buildRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\build\\${name}",
+      "installRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\install\\${name}",
+      "remoteCopySources": true,
+      "remoteCopySourcesOutputVerbosity": "Normal",
+      "remoteCopySourcesConcurrentCopies": "10",
+      "remoteCopySourcesMethod": "sftp",
+      "remoteCopySourcesExclusionList": [
+        ".vs",
+        ".git"
+      ],
+      "rsyncCommandArgs": "-t --delete --delete-excluded",
+      "remoteCopyBuildOutput": false,
+      "cmakeCommandArgs": "-j10",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "linux_x64"
+      ]
+    }
+  ]
+}

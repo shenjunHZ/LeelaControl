@@ -4,17 +4,21 @@
 
 #pragma once
 #include <functional>
+#ifdef WIN_ENV_RUN
+#include <winsock.h>
+#endif // WIN_ENV_RUN
 
+namespace sockets
+{
 namespace types
 {
 #ifndef WIN_ENV_RUN
-    using FileDescriptor = int;
+        using FileDescriptor = int;
 #else
-    using FileDescriptor = SOCKET;
+        using FileDescriptor = SOCKET;
 #endif
-}
-namespace sockets
-{
+} // namespace types
+
 class DescriptorPoller
 {
 public:

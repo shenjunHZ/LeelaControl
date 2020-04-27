@@ -9,6 +9,6 @@ namespace games
         virtual ~IManagementJob() = default;
         virtual void createJobLeela(const leelaStarLevel& level) = 0;
         virtual void startJobLeela(const leelaStarLevel& level) = 0;
-        virtual const IJob& getJob(const leelaStarLevel& level) = 0;
+        virtual IJob& getJob(const leelaStarLevel& level) = 0;
     };
-}
+} // namespace games

@@ -6,6 +6,7 @@
 #define LEELA_CONFIG_PREFIX "leela"
 #define ADDRESSER_PREFIX    "addresses"
 #define LOGGER_PREFIX       "logger"
+#define TCP_PREFIX          "tcp"
 
 namespace configurations
 {
@@ -23,6 +24,14 @@ namespace configurations
     constexpr auto waitLeelazStartTimes = LEELA_CONFIG_PREFIX ".waitLeelazStartTimes";
 
     constexpr auto serviceAddress = ADDRESSER_PREFIX ".serviceAddress";
+
+    constexpr auto tcpServiceIp = TCP_PREFIX ".tcpServiceIp";
+    constexpr auto tcpServicePort = TCP_PREFIX ".tcpServicePort";
+    constexpr auto tcpBufferSize = TCP_PREFIX ".tcpBufferSize";
+    constexpr auto tcpKeepAlive = TCP_PREFIX ".tcpKeepAlive";
+    constexpr auto tcpKeepIdle = TCP_PREFIX ".tcpKeepIdle";
+    constexpr auto tcpKeepInterval = TCP_PREFIX ".tcpKeepInterval";
+    constexpr auto tcpKeepCount = TCP_PREFIX ".tcpKeepCount";
 
     constexpr auto loggerLevel    = LOGGER_PREFIX ".loggerLevel";
     constexpr auto maxFileSize    = LOGGER_PREFIX ".maxFileSize";

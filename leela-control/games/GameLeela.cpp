@@ -134,7 +134,7 @@ namespace games
         return true;
     }
 
-    bool GameLeela::sendGtpCommand(QString cmd)
+    bool GameLeela::sendGtpCommand(QString cmd, std::string& result)
     {
         write(qPrintable(cmd.append("\n")));
         waitForBytesWritten(-1);
@@ -159,6 +159,7 @@ namespace games
             recordError(errorInfo::ERROR_PROCESS);
             return false;
         }
+        result = readBuffer;
         return true;
     }
 
@@ -179,7 +180,8 @@ namespace games
         for (auto command : m_commands) 
         {
             QTextStream(stdout) << QString::fromStdString(command) + ": " << endl;
-             if (!sendGtpCommand(QString::fromStdString(command)))
+            std::string result = "";
+             if (!sendGtpCommand(QString::fromStdString(command), result))
              {
                  QTextStream(stdout) << "GTP failed on: " << QString::fromStdString(command) << endl;
                  exit(EXIT_FAILURE);

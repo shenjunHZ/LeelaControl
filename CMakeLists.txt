@@ -6,11 +6,13 @@ cmake_minimum_required (VERSION 3.1)
 project ("LeelaControl")
 set(EXECUTABLE_NAME "LeelaControl")
 
+MESSAGE(STATUS "Run in cxx compiler: ${CMAKE_CXX_COMPILER_ID}")
+
 if(${CMAKE_C_COMPILER} MATCHES "MSVC" )
     set(WIN_ENV TRUE)
     add_definitions(-DWIN_ENV_RUN)
     set(CMAKE_CXX_FLAGS_RELEASE "/MD")
-    set(CMAKE_CXX_FLAGS_DEBUG "/MDd")
+    #set(CMAKE_CXX_FLAGS_DEBUG "/MDd")
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Lib)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Bin)
@@ -31,7 +33,11 @@ elseif($ENV{TARGET} MATCHES "gcc-linux")
     message(STATUS "==GCC LINUX==")
 endif()
 
-
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(ARM true)
+    add_definitions(-DRUN_IN_ARM)
+    MESSAGE(STATUS "ARM env.")
+endif()
 
 set(USE_CPU_ONLY TRUE)
 

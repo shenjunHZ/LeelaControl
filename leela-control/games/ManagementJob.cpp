@@ -37,7 +37,7 @@ namespace games
         }
     }
 
-    const IJob& ManagementJob::getJob(const leelaStarLevel& level)
+    IJob& ManagementJob::getJob(const leelaStarLevel& level)
     {
          for (const auto& gameJob : m_gameJobs)
          {
@@ -47,7 +47,8 @@ namespace games
              }
          }
         createJobLeela(level);
-         return *m_gameJobs[level];
+        startJobLeela(level);
+        return *m_gameJobs[level];
     }
 
 }

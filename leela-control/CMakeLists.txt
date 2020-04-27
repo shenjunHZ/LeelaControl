@@ -3,17 +3,18 @@
 #
 if(${WIN_ENV})
     INCLUDE_DIRECTORIES(
-        C:/Qt/Qt5.7.1_32/5.7/msvc2015/include
-        D:/Develop_Code/Open_Resource/boost_1_65_1
-        D:/Develop_Code/Open_Resource/zeromq-4.2.2/include
-        D:/Develop_Code/Open_Resource/zmqHelp
-        D:/Develop_Code/Open_Resource/spdlog-1.x/include
+        C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/include
+        C:/RootPath/Open_Resource/Qt-x86-5.10.1/5.10.1/msvc2017_64/include
+        C:/RootPath/Open_Resource/boost_1_65_1
+        C:/RootPath/Open_Resource/zeromq-4.2.2/include
+        C:/RootPath/Open_Resource/zmqHelp
+        C:/RootPath/Open_Resource/spdlog-1.x/include
     )
     # zmq need use dynamic, donot know why static failed
     LINK_DIRECTORIES(
-        C:/Qt/Qt5.7.1_32/5.7/msvc2015/lib
-        D:/Develop_Code/Open_Resource/boost_1_65_1/lib32-msvc-14.1
-        D:/Develop_Code/Open_Resource/zeromq-4.2.2/bin/Win32/Release/v141/dynamic
+        C:/RootPath/Open_Resource/Qt-x86-5.10.1/5.10.1/msvc2017_64/lib
+        C:/RootPath/Open_Resource/boost_1_65_1/lib64-msvc-2017
+        C:/RootPath/Open_Resource/zeromq-4.2.2/bin/x64/Release/v141/dynamic
     )
 elseif(${ARM_LINUX})
     # required packages
@@ -48,6 +49,7 @@ elseif(${GCC_LINUX})
         /ephemeral/junshen/development/tools/boost_1_65_1/gcc_bin/lib
         /ephemeral/junshen/development/tools/zeromq-4.3.1/gcc/lib
     )
+
 else()
     INCLUDE_DIRECTORIES(
             /home/shenjun/tools/Qt5.7.1/5.7/gcc_64/include
@@ -77,6 +79,10 @@ set (SOURCES
      helps/ParseHelp.cpp
      sockets/ZmqReceiver.cpp
      sockets/ServiceReceiver.cpp
+     sockets/SocketMonitorNotifier.cpp
+     sockets/tcp/TcpServEndpoint.cpp
+     sockets/tcp/TcpSysCall.cpp
+     sockets/tcp/TcpSysCallFactory.cpp
      LeelaControl.cpp
     )
 
@@ -95,6 +101,12 @@ set(INCLUDE
     sockets/ServiceReceiver.hpp
     sockets/ZmqReceiver.hpp
     sockets/ISocket.hpp
+    sockets/SocketMonitorNotifier.hpp
+    sockets/tcp/TcpServEndpoint.hpp
+    sockets/tcp/TcpSysCall.hpp
+    sockets/tcp/TcpSysCallFactory.hpp
+    sockets/tcp/types/IpVersion.hpp
+    sockets/tcp/types/TcpMessageEnvelope.hpp
     applications/ServiceContext.hpp
     LeelaControl.hpp
     )

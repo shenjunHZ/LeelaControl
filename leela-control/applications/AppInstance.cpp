@@ -4,6 +4,8 @@
 
 namespace
 {
+    constexpr int leelaAgentCounters = 9;
+
     std::string getLeelaPath(const configurations::AppConfiguration& config)
     {
         if (config.find(configurations::leelaPath) != config.end())
@@ -22,7 +24,7 @@ namespace
         return false;
     }
 
-    std::bitset<9> getLeelaLevel(const configurations::AppConfiguration& config)
+    std::bitset<leelaAgentCounters> getLeelaLevel(const configurations::AppConfiguration& config)
     {
         std::bitset<9> bitSet;
         if(config.find(configurations::enableLeelaLevel_1) != config.end())
@@ -100,18 +102,20 @@ namespace applications
                        isEnableLeelaLog(serviceContext.m_configParams),
                        serviceContext.m_logger}
         , m_userApp{m_Management}
-        , m_ServiceReceiver{serviceContext.m_zmqReceiver,
+        , m_serviceReceiver{serviceContext.m_zmqReceiver,
 							serviceContext.m_zmqContext,
 							helps::createBindableAddress(serviceContext.m_addresses.serviceAddress),
 							m_userApp}
+        , m_tcpSysCallFactory{}
+        , m_tcpServEndpoint{ m_tcpSysCallFactory, serviceContext.m_zmqReceiver, serviceContext.m_addresses, m_userApp }
     {
         initService(serviceContext.m_configParams);
     }
 
     void AppInstance::initService(const configurations::AppConfiguration& config)
     {
-        std::bitset<9> bitSet = getLeelaLevel(config);
-        for(int index = 0; index < 9; index++)
+        std::bitset<leelaAgentCounters> bitSet = getLeelaLevel(config);
+        for(int index = 0; index < leelaAgentCounters; index++)
         {
             if(bitSet.test(index))
             {

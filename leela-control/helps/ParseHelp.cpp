@@ -30,7 +30,7 @@ namespace helps
 			{
 				auto defaultConfigFilePath = po::value<std::string>()->default_value("configuration.ini");
 
-				optDescr.add_options()("config-file,c", defaultConfigFilePath, "Configuration file path")(
+				optDescr.add_options()("config,c", defaultConfigFilePath, "Configuration file path")(
 			    	"help,h", "Prints this help message");
             }
             catch (boost::bad_lexical_cast& e)
@@ -61,7 +61,17 @@ namespace helps
     configurations::AppAddresses getAppAddresses(const boost::program_options::variables_map& cmdParams)
     {
         using namespace configurations::keys;
-        return configurations::AppAddresses{cmdParams[serviceAddress].as<std::string>()};
+        configurations::tcpServiceParams tcpParams;
+
+        tcpParams.tcpServiceIp = cmdParams[tcpServiceIp].as<std::string>();
+        tcpParams.tcpServicePort = cmdParams[tcpServicePort].as<int>();
+        tcpParams.tcpBufferSize = cmdParams[tcpBufferSize].as<int>();
+        tcpParams.tcpKeepAlive  = cmdParams[tcpKeepAlive].as<int>();
+        tcpParams.tcpKeepCount  = cmdParams[tcpKeepCount].as<int>();
+        tcpParams.tcpKeepIdle   = cmdParams[tcpKeepIdle].as<int>();
+
+        return configurations::AppAddresses{cmdParams[serviceAddress].as<std::string>(), 
+            tcpParams.tcpServiceIp + std::to_string(tcpParams.tcpServicePort), tcpParams};
     }
 
     //using namespace std::string_literals;

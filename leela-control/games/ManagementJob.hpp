@@ -20,7 +20,7 @@ namespace games
 
         void createJobLeela(const leelaStarLevel& level) override;
         void startJobLeela(const leelaStarLevel& level) override;
-        const IJob& getJob(const leelaStarLevel& level) override;
+        IJob& getJob(const leelaStarLevel& level) override;
 
     private:
         std::string m_binaryPath;

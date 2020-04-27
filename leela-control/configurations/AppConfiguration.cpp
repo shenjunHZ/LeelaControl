@@ -16,6 +16,15 @@ namespace
             (configurations::leelaPath, value<std::string>()->default_value("./"), "leela zero execute path")
             (configurations::enableLeelaLog, value<bool>()->default_value(false), "enable leela zero log")
             (configurations::serviceAddress, value<std::string>()->required(), "leela control service address")
+
+            (configurations::tcpServiceIp, value<std::string>()->required(), "leela control tcp service ip address")
+            (configurations::tcpServicePort, value<int>()->required(), "leela control tcp service port")
+            (configurations::tcpBufferSize, value<int>()->required(), "leela control tcp service buffer size")
+            (configurations::tcpKeepAlive, value<int>()->required(), "leela control tcp service open keeplive")
+            (configurations::tcpKeepIdle, value<int>()->required(), "leela control tcp service idle to detect")
+            (configurations::tcpKeepInterval, value<int>()->required(), "leela control tcp service detect interval")
+            (configurations::tcpKeepCount, value<int>()->required(), "leela control tcp service detect times")
+
             (configurations::enableLeelaLevel_1, value<bool>()->default_value(false), "leela engine level 1")
             (configurations::enableLeelaLevel_2, value<bool>()->default_value(false), "leela engine level 2")
             (configurations::enableLeelaLevel_3, value<bool>()->default_value(false), "leela engine level 3")

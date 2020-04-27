@@ -32,7 +32,7 @@ namespace games
         ~GameLeela() = default;
 
         bool gameStart(const VersionTuple& minVersion);
-        bool sendGtpCommand(QString cmd);
+        bool sendGtpCommand(QString cmd, std::string& result);
 
     private:
         void recordError(const errorInfo& error);

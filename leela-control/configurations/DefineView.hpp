@@ -23,9 +23,22 @@ namespace configurations
         STAR_LEVEL_9
     };
 
+    struct tcpServiceParams
+    {
+        std::string tcpServiceIp;
+        int tcpServicePort;
+        int tcpBufferSize;
+        int tcpKeepAlive;
+        int tcpKeepIdle;
+        int tcpKeepInterval;
+        int tcpKeepCount;
+    };
+
     struct AppAddresses
     {
         std::string serviceAddress;
+        std::string tcpServiceAddress;
+        tcpServiceParams tcpParams;
     };
 
     struct messageData
@@ -34,8 +47,17 @@ namespace configurations
         std::string message;
     };
 
+    constexpr auto serviceSocketMonitor = "inproc://serviceSocketMonitor";
+
 namespace keys
 {
     const std::string serviceAddress = "addresses" ".serviceAddress";
+    const std::string tcpServiceIp = "tcp" ".tcpServiceIp";
+    const std::string tcpServicePort = "tcp" ".tcpServicePort";
+    const std::string tcpBufferSize = "tcp" ".tcpBufferSize";
+    const std::string tcpKeepAlive = "tcp" ".tcpKeepAlive";
+    const std::string tcpKeepCount = "tcp" ".tcpKeepCount";
+    const std::string tcpKeepIdle = "tcp" ".tcpKeepIdle";
+    const std::string tcpKeepInterval = "tcp" ".tcpKeepInterval";
 } // namespace keys
 } // namespace configurations

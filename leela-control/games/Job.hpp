@@ -16,6 +16,13 @@
 
 namespace games
 {
+    struct LeelaJobCommand
+    {
+        std::string chassBoardID;
+        std::string command;
+        resultCallback callback;
+    };
+
     class GameLeela;
 
     class Job : public IJob
@@ -23,22 +30,25 @@ namespace games
     public:
         Job(const std::string& binary, const bool& enableGTPEngine, const bool& enableLeelaLog, spdlog::logger& logger);
         ~Job();
-        void createJobParameter(const configurations::leelaStarLevel& level) override;
+        void createJobParameter(const leelaStarLevel& level) override;
         void startGameLeela() override;
+        void stopGameLeela() override;
+
+        void inputGTPCommand(const std::string& chassBoardID, const std::string& command,
+            const resultCallback& callback) override;
 
     private:
         bool isEnableGTPEngine();
 /* leela zero support commands
 * name    : print program name
 * version : print program version
-* time_setting 0 5 1 : It means that every 5 seconds you go down 1 step, and the actual setup takes 1 second, so it's roughly 4s
+* time_setting 0 5 1 : 0 is the first time, and others mean that every 5 seconds you go down 1 step, and the actual setup takes 1 second, so it's roughly 4s
 */
         void inputDefaultCommand();
         void runGame();
+        void gameA(); // for test
 
 	private:
-		void gameA();
-		void gameB();
 		int testTimes{0};
 
     private:
@@ -55,6 +65,6 @@ namespace games
         std::string m_strOption;
         std::string m_strWeight;
 
-        std::queue<QString> m_commends;
+        std::queue<LeelaJobCommand> m_commends;
     };
 }

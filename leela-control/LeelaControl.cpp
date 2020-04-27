@@ -12,12 +12,20 @@ int main(int argc, char* argv[])
     app.setApplicationVersion(QString("V: %1").arg(LEELA_CONTROL_VERSION));
 
     boost::program_options::variables_map cmdParams;
-    helps::parseProgramOptions(argc, argv, cmdParams);
+    std::string config = "";
+    if (argc > 2)
+    {
+        helps::parseProgramOptions(argc, argv, cmdParams);
+        config = cmdParams["config"].as<std::string>();
+    }
+    else
+    {
+        config = "./configuration.ini";
+    }
 
     try
     {
-        configurations::AppConfiguration configParams =
-            configurations::loadFromIniFile(cmdParams["config-file"].as<std::string>());
+        configurations::AppConfiguration configParams = configurations::loadFromIniFile(config);
         const configurations::AppAddresses addresses = helps::getAppAddresses(configParams);
 
         spdlog::logger& logger = logger::getLogger();

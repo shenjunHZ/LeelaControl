@@ -34,7 +34,7 @@ elseif($ENV{TARGET} MATCHES "gcc-linux")
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(ARM true)
+    set(ARM_LINUX true)
     add_definitions(-DRUN_IN_ARM)
     MESSAGE(STATUS "ARM env.")
 endif()

@@ -35,7 +35,6 @@ elseif(${ARM_LINUX})
     include_directories(${Boost_INCLUDE_DIRS})
     include_directories(${Qt5Core_INCLUDE_DIRS})
     message("qt include path ${Qt5Core_INCLUDE_DIRS}")
-
 elseif(${GCC_LINUX})
     INCLUDE_DIRECTORIES(
         /ephemeral/junshen/development/tools/Qt5.7.1/5.7/gcc_64/include

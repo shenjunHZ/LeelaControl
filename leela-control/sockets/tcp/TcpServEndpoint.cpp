@@ -121,7 +121,7 @@ namespace sockets
         }
         std::cout << "debug: " << "received message: " << std::string{ receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize } 
             << " socket: " << clientFd << std::endl;
-        //m_userApp.onMessage(types::TcpMessageEnvelope{ {receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize}, clientFd });
+        m_userApp.onMessage(types::TcpMessageEnvelope{ {receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize}, clientFd });
     }
     catch (const std::exception& e)
     {
@@ -133,7 +133,7 @@ namespace sockets
     {
         std::unique_ptr<ITcpSysCall>& tcpSysCall = m_tcpSockets.at(ipVersion);
         tcpSysCall->wrapperSetsockopt(tcpSysCall->getFileDescriptor(), SOL_SOCKET, SO_KEEPALIVE, &keepAlive, sizeof(keepAlive));
-        tcpSysCall->wrapperSetsockopt(tcpSysCall->getFileDescriptor(), IPPROTO_TCP, TCP_KEEPALIVE, &keepIdle, sizeof(keepIdle));
+        tcpSysCall->wrapperSetsockopt(tcpSysCall->getFileDescriptor(), IPPROTO_TCP, TCP_KEEPIDLE, &keepIdle, sizeof(keepIdle));
         tcpSysCall->wrapperSetsockopt(tcpSysCall->getFileDescriptor(), IPPROTO_TCP, TCP_KEEPINTVL, &keepInterval, sizeof(keepInterval));
         tcpSysCall->wrapperSetsockopt(tcpSysCall->getFileDescriptor(), IPPROTO_TCP, TCP_KEEPCNT, &keepCount, sizeof(keepCount));
     }

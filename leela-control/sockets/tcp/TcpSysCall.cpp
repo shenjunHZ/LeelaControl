@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 #include "TcpSysCall.hpp"
 
 namespace sockets
@@ -34,7 +36,7 @@ namespace sockets
         if (0 != bind(m_socketFd, servAddr, sizeof(*servAddr)))
         {
             std::cout << "error: " << "socket bind error dress: " << std::string(servAddr->sa_data).c_str() << " family: " << servAddr->sa_family << std::endl;
-            std::cout << "tcp socket bind error: " << std::strerror(errno) << std::endl;
+            std::cout << "tcp socket bind error: " << strerror(errno) << std::endl;
             return false;
         }
         else
@@ -57,7 +59,11 @@ namespace sockets
 
     int TcpSysCall::wrapperSocketAccept(sockaddr_in& clientAddr, int size)
     {
+#ifdef WIN_ENV_RUN
         int cliFd = accept(m_socketFd, (sockaddr*)(&clientAddr), &size);
+#else
+        int cliFd = accept(m_socketFd, (sockaddr*)(&clientAddr), (socklen_t*)(&size));
+#endif
         if (cliFd >= 0)
         {
             std::cout << "info: " << "accept socket fd: " << cliFd << " client ip: " << inet_ntoa(clientAddr.sin_addr)
@@ -65,7 +71,7 @@ namespace sockets
         }
         else
         {
-            std::cout << "accept error: " << std::strerror(errno) << std::endl;
+            std::cout << "accept error: " << strerror(errno) << std::endl;
         }
 
         return cliFd;
@@ -73,7 +79,11 @@ namespace sockets
 
     void TcpSysCall::wrapperSocketClose() const
     {
+#ifdef WIN_ENV_RUN
         closesocket(m_socketFd);
+#else
+        close(m_socketFd);
+#endif
     }
 
     int TcpSysCall::wrapperSocketConnect(int cliFd, const sockaddr_in servAddr, int size)
@@ -126,7 +136,11 @@ namespace sockets
     {
         int isListening = 0;
         int sizeListening = sizeof(isListening);
+#ifdef WIN_ENV_RUN
         const int result = getsockopt(m_socketFd, SOL_SOCKET, SO_ACCEPTCONN, (char*)(&isListening), &sizeListening);
+#else
+        const int result = getsockopt(m_socketFd, SOL_SOCKET, SO_ACCEPTCONN, (char*)(&isListening), (socklen_t*)(&sizeListening));
+#endif
         if (-1 == result)
         {
             std::cout << "error: " << "get sock optional invalid." << std::endl;
@@ -138,7 +152,11 @@ namespace sockets
     void TcpSysCall::closeSocket(int socketFd) const
     {
         std::cout << "debug: " << "socket close: " << m_socketFd;
+#ifdef WIN_ENV_RUN
         closesocket(socketFd);
+#else
+        close(socketFd);
+#endif
     }
 
     int TcpSysCall::wrapperSetsockopt(int fd, int level, int optionName, const void* optionVal, int optionLen) const

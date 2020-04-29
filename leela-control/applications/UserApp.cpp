@@ -61,6 +61,10 @@ namespace applications
             resultCallback callback;
             leelaJob.inputGTPCommand(id, command, callback);
         }
+        else
+        {
+            std::cout << "Worning: " << "cannot find leela to process this command " << command.c_str() << std::endl;
+        }
     }
 
     void UserApp::processMessage()

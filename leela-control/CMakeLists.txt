@@ -23,18 +23,19 @@ elseif(${ARM_LINUX})
     find_package(Boost 1.58.0 REQUIRED program_options filesystem)
 
     find_package(Qt5Core REQUIRED)
-    #find_package(pkgconfig)
-    #find_package(libzmq REQUIRED)
-    INCLUDE_DIRECTORIES(
-            /home/junshen/tools/zeromq-4.3.1/arm_bin/include
-            /home/junshen/tools/zmqHelp
-    )
-    LINK_DIRECTORIES(/home/junshen/tools/zeromq-4.3.1/arm_bin/lib)
+    find_package(PkgConfig REQUIRED)
+	pkg_check_modules(ZMQ libzmq)
+	message(status, "${ZMQ_LIBRARY_DIRS}")
+
+	link_directories(${ZMQ_LIBRARY_DIRS})
 
     # include
+	include_directories(${ZMQ_INCLUDE_DIRS})
+	message("ZMQ include path ${ZMQ_INCLUDE_DIRS}")
     include_directories(${Boost_INCLUDE_DIRS})
+	message("Boost include path ${Boost_INCLUDE_DIRS}")
     include_directories(${Qt5Core_INCLUDE_DIRS})
-    message("qt include path ${Qt5Core_INCLUDE_DIRS}")
+    message("QT include path ${Qt5Core_INCLUDE_DIRS}")
 elseif(${GCC_LINUX})
     INCLUDE_DIRECTORIES(
         /ephemeral/junshen/development/tools/Qt5.7.1/5.7/gcc_64/include

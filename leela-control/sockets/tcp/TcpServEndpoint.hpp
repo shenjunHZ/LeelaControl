@@ -22,7 +22,7 @@ namespace sockets
     class TcpServEndpoint final
     {
     public:
-        TcpServEndpoint::TcpServEndpoint(TcpSysCallFactory& tcpSysCallFactory, ZmqReceiver& zmqReceiver, 
+        TcpServEndpoint(TcpSysCallFactory& tcpSysCallFactory, ZmqReceiver& zmqReceiver, 
             const configurations::AppAddresses& appAddresses, applications::UserApp& userApp);
         ~TcpServEndpoint();
 

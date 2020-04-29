@@ -1,10 +1,13 @@
 #pragma once
-//#include <arpa/inet.h>
 #ifdef WIN_ENV_RUN
 #include <winsock.h>
 #else
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/tcp.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #endif // WIN_ENV_RUN
 
 namespace sockets

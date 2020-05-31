@@ -151,7 +151,6 @@ namespace sockets
 
     void TcpSysCall::closeSocket(int socketFd) const
     {
-        std::cout << "debug: " << "socket close: " << m_socketFd;
 #ifdef WIN_ENV_RUN
         closesocket(socketFd);
 #else

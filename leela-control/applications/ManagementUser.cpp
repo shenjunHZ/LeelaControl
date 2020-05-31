@@ -8,7 +8,7 @@ namespace applications
         m_cQsPtl.SetParamter(true, "000000", m_receiveBuffer.data(), bufferSize); // use common qs protocol
     }
 
-    void ManagementUser::onTcpMessage(const sockets::types::TcpMessageEnvelope& data, const int socketFd)
+    void ManagementUser::onTcpMessage(const configurations::types::TcpMessageEnvelope& data, const int socketFd)
     {
 
     }

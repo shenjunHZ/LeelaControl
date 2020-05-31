@@ -1,18 +1,21 @@
 //
 // Created by junshen on 1/26/19.
 //
-
 #pragma once
 #include "configurations/AppConfiguration.hpp"
 #include "configurations/DefineView.hpp"
 #include "games/ManagementJob.hpp"
-#include "sockets/tcp/types/TcpMessageEnvelope.hpp"
+#include "configurations/types/TcpMessageEnvelope.hpp"
 #include <boost/variant.hpp>
 #include <boost/lexical_cast.hpp>
 
+namespace
+{
+    const std::string START_AI{"start_ai"};
+}
 namespace applications
 {
-using variant = boost::variant<configurations::messageData, sockets::types::TcpMessageEnvelope>;
+using variant = boost::variant<configurations::messageData, configurations::types::TcpMessageEnvelope>;
 
 class UserApp
 {
@@ -20,10 +23,12 @@ public:
 	UserApp(games::IManagementJob& managementJob);
 	~UserApp();
 	void onMessage(const configurations::messageData& data);
-    void onMessage(const sockets::types::TcpMessageEnvelope& data);
+    void onMessage(const configurations::types::TcpMessageEnvelope& data);
 
-    void onGTPMessage(const std::string& id, const std::string& command);
-
+    void onGTPMessage(const std::string& id, const std::string& command, 
+        configurations::types::RespCallback callback);
+    void onControlMessage(const std::string& id, const std::string& command,
+        configurations::types::RespCallback callback);
 private:
 	void startProcess();
 	void processMessage();
@@ -48,27 +53,44 @@ struct Handler : public boost::static_visitor <void>
     {
         std::cout << "Debug: " << "process zmq message. " << std::endl;
     }
-    void operator () (sockets::types::TcpMessageEnvelope messageEnvolope)
+    void operator () (configurations::types::TcpMessageEnvelope messageEnvolope)
     {
-        std::cout << "Debug: " << "process tcp socket message. " << std::endl;
-
-        onGTPMessage(messageEnvolope.socketFd, messageEnvolope.payload); // to do decode payload to command and chassBoardID
+        //LOG_DEBUG_MSG("Process tcp socket message.");
+        if ( std::string::npos != messageEnvolope.payload.find(START_AI) )
+        {
+            onControlMessage(messageEnvolope.socketFd,
+                messageEnvolope.payload, messageEnvolope.callback);
+            return;
+        }
+        
+        onGTPMessage(messageEnvolope.socketFd, 
+            messageEnvolope.payload, messageEnvolope.callback); // to do decode payload to command and chassBoardID
     }
 
-    //    void UserApp::handleConnectionRequest()
-    // 	{
-    // 		std::cout << "Debug: " << "connection request " << std::endl;
-    // 	}
-
-    void onGTPMessage(const int& socketFd, const std::string& command)
+    void onGTPMessage(const int& socketFd, const std::string& command, 
+        configurations::types::RespCallback callback)
     {
         try
         {
-            m_userApp.onGTPMessage(boost::lexical_cast<std::string>(socketFd), command);
+            m_userApp.onGTPMessage(boost::lexical_cast<std::string>(socketFd), 
+                command, callback);
         }
         catch (boost::bad_lexical_cast & e)
         {
-            std::cout << "error: " << "decode socket fd "<< socketFd << "failed: " << e.what() << std::endl;
+            LOG_ERROR_MSG("Decode socket fd {} failed: {}", socketFd, e.what());
+        }
+    }
+
+    void onControlMessage(const int& socketFd, const std::string& command,
+        configurations::types::RespCallback callback)
+    {
+        try
+        {
+            m_userApp.onControlMessage(boost::lexical_cast<std::string>(socketFd), command, callback);
+        }
+        catch (boost::bad_lexical_cast & e)
+        {
+            std::cout << "error: " << "decode socket fd " << socketFd << "failed: " << e.what() << std::endl;
         }
     }
 

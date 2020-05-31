@@ -5,6 +5,7 @@
 #include <unistd.h>
 #else
 #include <windows.h>
+#include <ciso646>
 #endif
 #include <iostream>
 #include <atomic>
@@ -12,9 +13,12 @@
 namespace
 {
 	std::atomic_bool keep_running(true);
-    using resultCallback = std::function<void(const std::string&)>;
-}
 
+    const std::string LEELA{"leela"};
+    const std::string STOP_AI{"quit"};
+}  // namespace
+
+using namespace configurations;
 namespace applications
 {
 	UserApp::UserApp(games::IManagementJob& managementJob)
@@ -42,29 +46,83 @@ namespace applications
 		m_condition.notify_one();
 	}
 
-    void UserApp::onMessage(const sockets::types::TcpMessageEnvelope& data)
+    void UserApp::onMessage(const configurations::types::TcpMessageEnvelope& data)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_messageDatas.push(data);
-
-        std::cout << "Debug: " << "socket fd: " << data.socketFd 
-            << " data message: " << data.payload << std::endl;
         m_condition.notify_one();
     }
 
-    void UserApp::onGTPMessage(const std::string& id, const std::string& command)
+    void UserApp::onGTPMessage(const std::string& id, const std::string& command, 
+        configurations::types::RespCallback callback)
     {
         auto it = m_socketToLeela.find(id);
         if (it != m_socketToLeela.end())
         {
-            auto& leelaJob = m_managementJob.getJob(it->second);
-            resultCallback callback;
-            leelaJob.inputGTPCommand(id, command, callback);
+            const auto& leelaJob = m_managementJob.getJob(it->second);
+            if (leelaJob)
+            {
+                if (std::string::npos != command.find(STOP_AI))
+                {
+                    m_managementJob.stopGameLeela(it->second);
+                    m_socketToLeela.erase(id);
+                }
+                else
+                {
+                    leelaJob->inputGTPCommand(id, command, callback);
+                }
+            }
+            else
+            {
+                LOG_WARNING_MSG("Cannot find leela to process this command {}", command);
+            }
         }
         else
         {
-            std::cout << "Worning: " << "cannot find leela to process this command " << command.c_str() << std::endl;
+            LOG_WARNING_MSG("Have not start leela for this link.");
         }
+    }
+
+    void UserApp::onControlMessage(const std::string& id, const std::string& command,
+        configurations::types::RespCallback callback)
+    {
+        const auto leela = command.find(LEELA);
+        if (std::string::npos == leela)
+        {
+            LOG_WARNING_MSG("Should set with leela AI.");
+            return;
+        }
+        std::string level = command.substr(leela + std::strlen(LEELA.c_str()) + 1);
+        if (level.empty())
+        {
+            LOG_WARNING_MSG("Should set with leela level.");
+            return;
+        }
+        if ( std::atoi(level.c_str()) < static_cast<int>(leelaStarLevel::STAR_LEVEL_1) or 
+                std::atoi(level.c_str()) > static_cast<int>(leelaStarLevel::STAR_LEVEL_9 ) )
+        {
+            LOG_WARNING_MSG("Excede leela level: {}", std::atoi(level.c_str()));
+            return;
+        }
+        auto it = m_socketToLeela.find(id);
+        if (it != m_socketToLeela.end())
+        {
+            LOG_WARNING_MSG("This link id have started leela: {}", static_cast<int>(it->second));
+            return;
+        }
+        for (const auto& leela : m_socketToLeela)
+        {
+            if ( std::atoi(level.c_str()) 
+                == static_cast<int>(leela.second) )
+            {
+                LOG_DEBUG_MSG("Leela level: {}, have been started.", std::atoi(level.c_str()));
+                m_socketToLeela[id] = leela.second;
+                return;
+            }
+        }
+        m_managementJob.createJobLeela(static_cast<leelaStarLevel>(std::atoi(level.c_str())));
+        m_managementJob.startJobLeela(static_cast<leelaStarLevel>(std::atoi(level.c_str())), callback);
+        m_socketToLeela[id] = static_cast<leelaStarLevel>(std::atoi(level.c_str()));
     }
 
     void UserApp::processMessage()

@@ -10,6 +10,7 @@
 #include <boost/function.hpp>
 #include "Job.hpp"
 #include "GameLeela.hpp"
+#include "LeelaCPUOnly.hpp"
 
 namespace
 {
@@ -45,48 +46,57 @@ namespace games
 
     void Job::inputDefaultCommand()
     {
-        m_defaultCommands.emplace_back("name");
-        m_defaultCommands.emplace_back("version");
+       // m_defaultCommands.emplace_back("name");
+       // m_defaultCommands.emplace_back("version");
         /*this is set so that the time value is not calculated by the machine
         as the development board resource limited*/
-        m_defaultCommands.emplace_back("time_settings 0 0 1");
+       // m_defaultCommands.emplace_back("time_settings 0 0 1");
     }
 
     void Job::createJobParameter(const leelaStarLevel& level)
     {
         if (isEnableGTPEngine())
         {
-            m_strOption += "-g ";
+            m_strOption += "-g";
         }
         if(m_enableLeelaLog)
         {
-            m_strOption += "--logfile " + m_binaryPath + "leelaz.log ";
+            m_strOption += " --quiet --logfile " + m_binaryPath + "leelaz.log ";
         }
         m_strWeight = "-w ";
 
         switch (level)
         {
             case leelaStarLevel::STAR_LEVEL_1:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_2:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_3:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_4:
                 m_strWeight += m_binaryPath + "leelaz120.gz ";
                 return;
             case leelaStarLevel::STAR_LEVEL_5:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_6:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_7:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_8:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
             case leelaStarLevel::STAR_LEVEL_9:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
                 break;
+            default:
+                m_strWeight += m_binaryPath + "leelaz120.gz ";
         }
-        m_strWeight += m_binaryPath + "leelaz120.gz ";
     }
 
     void Job::inputGTPCommand(const std::string& chassBoardID, const std::string& command,
@@ -97,12 +107,20 @@ namespace games
         m_condition.notify_one();
     }
 
-    void Job::runGame()
+    void Job::runGame(const resultCallback& callback)
     {
         std::tuple<int, int, int> version{ 0, 0, 1 };
-        m_gameLeela = std::make_unique<GameLeela>(m_binaryPath + "leelaz", m_strOption, m_strWeight, m_defaultCommands, m_logger);
+        if (isEnableGTPEngine())
+        {
+            m_gameLeela = std::make_unique<GameLeela>(m_binaryPath + "leelaz", m_strOption, m_strWeight, m_defaultCommands, m_logger);
+        }
+        else
+        {
+            m_gameLeela = std::make_unique<LeelaCPUOnly>(m_binaryPath + "leelaz", m_strOption, m_strWeight, m_defaultCommands, m_logger);
+        }
         /* QProcess need with GameLeela instantiation thread */
         m_gameLeela->gameStart(version);
+        callback("=");
 
         //gameA();
         while(keep_running)
@@ -113,6 +131,11 @@ namespace games
                 return !m_commends.empty();
             });
             LeelaJobCommand& leelaJobCommend = m_commends.front();
+            if ("dead" == leelaJobCommend.command)
+            {
+                LOG_DEBUG_MSG("Receive dead command, leela job will quit.");
+                return;
+            }
             std::string result = "";
             m_gameLeela->sendGtpCommand(QString::fromStdString(leelaJobCommend.command), result);
             if (leelaJobCommend.callback)
@@ -123,20 +146,27 @@ namespace games
         }
     }
 
-    void Job::startGameLeela()
+    void Job::startGameLeela(const resultCallback& callback)
     {
-        LOG_INFO_MSG(m_logger, "start leela game.");
+        LOG_INFO_MSG(m_logger, "Start leela game.");
+        keep_running = true;
 
-        boost::function<void()> fun = boost::bind(&Job::runGame, this);
-        m_threadGame = boost::thread(fun);
+        m_threadGame = std::thread(&Job::runGame, this, callback);
     }
 
     void Job::stopGameLeela()
     {
+        LOG_INFO_MSG(m_logger, "Stop leela game.");
+        if (m_gameLeela)
+        {
+            m_gameLeela->gameDown();
+        }
+
+        m_strWeight.clear();
         keep_running = false;
     }
 
-/***********************just for test************************/
+/***********************test************************/
     void Job::gameA()
     {
         std::cout<<"start game a"<<std::endl;

@@ -13,7 +13,7 @@ namespace applications
     {
     public:
         ManagementUser();
-        void onTcpMessage(const sockets::types::TcpMessageEnvelope& data, const int socketFd);
+        void onTcpMessage(const configurations::types::TcpMessageEnvelope& data, const int socketFd);
 
     private:
         std::map<std::string, int> m_;

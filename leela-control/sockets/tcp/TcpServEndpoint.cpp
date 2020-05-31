@@ -8,10 +8,10 @@ namespace sockets
 {
 
     constexpr int bufferSize{ 128 * 1024 };
-    constexpr int keepAlive = 1; // open keepalive
-    constexpr int keepIdle = 60 *5; // if no date in 60 * 5 seconds begint to detect  
-    constexpr int keepInterval = 5; // detection of interval 5 seconds  
-    constexpr int keepCount = 3; // detection times. if received will not send again.
+    constexpr int keepAlive = 1;    // open keepalive.
+    constexpr int keepIdle = 60 *5; // if no date in 60 * 5 seconds begint to detect.
+    constexpr int keepInterval = 5; // detection of interval 5 seconds.
+    constexpr int keepCount = 3;    // detection times. if received will not send again.
 
     TcpServEndpoint::TcpServEndpoint(TcpSysCallFactory& tcpSysCallFactory, ZmqReceiver& zmqReceiver, 
         const configurations::AppAddresses& appAddresses, applications::UserApp& userApp)
@@ -119,9 +119,15 @@ namespace sockets
             m_clientSockets.erase(clientFd);
             return;
         }
-        std::cout << "debug: " << "received message: " << std::string{ receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize } 
-            << " socket: " << clientFd << std::endl;
-        m_userApp.onMessage(types::TcpMessageEnvelope{ {receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize}, clientFd });
+        LOG_DEBUG_MSG("received message: {}, from socket {}.",std::string{ receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize }, clientFd);
+
+        m_userApp.onMessage(configurations::types::TcpMessageEnvelope{ {receiveBuffer.cbegin(), receiveBuffer.cbegin() + recvSize}, 
+            clientFd, [&tcpSysCall, &clientFd](const std::string& result)
+                {
+                    tcpSysCall->wrapperSocketSend(clientFd, result.c_str(), result.size());
+                    LOG_DEBUG_MSG("Send result to client: {}", result);
+                }
+            });
     }
     catch (const std::exception& e)
     {

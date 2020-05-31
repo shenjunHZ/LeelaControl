@@ -5,8 +5,8 @@
 #include <boost/exception/diagnostic_information.hpp>
 #include <map>
 #include <memory>
-#include "types/IpVersion.hpp"
-#include "types/TcpMessageEnvelope.hpp"
+#include "configurations/types/IpVersion.hpp"
+#include "configurations/types/TcpMessageEnvelope.hpp"
 #include "sockets/ZmqReceiver.hpp"
 #include "configurations/DefineView.hpp"
 #include "applications/UserApp.hpp"

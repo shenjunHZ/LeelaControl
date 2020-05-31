@@ -73,8 +73,11 @@ set (SOURCES
      applications/AppInstance.cpp
      applications/UserApp.cpp
      configurations/AppConfiguration.cpp
+	 #com/ComControl.cpp
+     #com/ComSerial.cpp
      games/GameLeela.cpp
      games/ManagementJob.cpp
+	 games/LeelaCPUOnly.cpp
      games/Job.cpp
      helps/ParseHelp.cpp
      sockets/ZmqReceiver.cpp
@@ -91,9 +94,16 @@ set(INCLUDE
     applications/UserApp.hpp
     configurations/AppConfiguration.hpp
     configurations/DefineView.hpp
+	configurations/types/IpVersion.hpp
+    configurations/types/TcpMessageEnvelope.hpp
+	com/include/ComControl.hpp
+	com/include/ComSerial.hpp
+	com/include/IComControl.hpp
+	com/include/IComSerial.hpp
     games/IManagementJob.hpp
     games/ManagementJob.hpp
     games/GameLeela.hpp
+	games/LeelaCPUOnly.hpp
     games/IJob.hpp
     games/Job.hpp
     helps/ParseHelp.hpp
@@ -105,8 +115,6 @@ set(INCLUDE
     sockets/tcp/TcpServEndpoint.hpp
     sockets/tcp/TcpSysCall.hpp
     sockets/tcp/TcpSysCallFactory.hpp
-    sockets/tcp/types/IpVersion.hpp
-    sockets/tcp/types/TcpMessageEnvelope.hpp
     applications/ServiceContext.hpp
     LeelaControl.hpp
     )

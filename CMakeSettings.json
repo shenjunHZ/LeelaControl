@@ -7,8 +7,8 @@
       "inheritEnvironments": [
         "msvc_x64"
       ],
-      "buildRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\build\\${name}",
-      "installRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\remoteBuildRoot\\LeelaControl_Demo\\install\\${name}",
+      "buildRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\LeelaControl_Demo\\build\\${name}",
+      "installRoot": "${projectDir}\\${workspaceHash}\\CMakeBuilds\\LeelaControl_Demo\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""

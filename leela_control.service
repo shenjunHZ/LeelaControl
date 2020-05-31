@@ -1,0 +1,11 @@
+[Unit]
+Description=leela control Demo service 
+
+[Service] 
+Type=simple 
+ExecStart=/home/khadas/development/service/leelaControl/LeelaControl --config /home/khadas/development/service/leelaControl/configuration.ini
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

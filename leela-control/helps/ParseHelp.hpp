@@ -23,4 +23,6 @@ namespace helps
     std::string createBindableAddress(
             const std::string& zmqAddress,
             const std::function<std::string(const std::string&)>& hostNameResolver = boostAsioBasedHostNameResolver);
+
+    std::vector<std::string> parseCommands(const std::string& datas);
 } // namespace helps

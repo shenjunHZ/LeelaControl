@@ -1,7 +1,6 @@
 //
 // Created by junshen on 1/27/19.
 //
-
 #include "ParseHelp.hpp"
 
 namespace
@@ -123,5 +122,20 @@ namespace helps
             return zmqAddress;
         }
         BOOST_THROW_EXCEPTION(std::invalid_argument("Cannot convert " + zmqAddress + " to bindable adddress"));
+    }
+
+    std::vector<std::string> parseCommands(const std::string& datas)
+    {
+        std::string::size_type index = std::string::npos;
+        std::vector<std::string> commands;
+        std::string commandDatas = datas;
+        do
+        {
+            index = commandDatas.find("\n");
+            commands.emplace_back(commandDatas.substr(0, index));
+            commandDatas = commandDatas.substr(index + 1);
+        } while (index != std::string::npos);
+
+        return commands;
     }
 }// namespace helps

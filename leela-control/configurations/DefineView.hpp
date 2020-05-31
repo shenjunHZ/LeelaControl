@@ -5,6 +5,7 @@ namespace configurations
     enum class errorInfo
     {
         ERROR_NO_LEELAZ = 1,
+        ERROR_PROCESS_DIED,
         ERROR_LAUNCH,
         ERROR_PROCESS,
         ERROR_GTP
@@ -12,7 +13,7 @@ namespace configurations
 
     enum class leelaStarLevel
     {
-        STAR_LEVEL_1 = 0,
+        STAR_LEVEL_1 = 1,
         STAR_LEVEL_2,
         STAR_LEVEL_3,
         STAR_LEVEL_4,
@@ -48,6 +49,14 @@ namespace configurations
     };
 
     constexpr auto serviceSocketMonitor = "inproc://serviceSocketMonitor";
+
+    struct comConfigParams
+    {
+        int baudRate;
+        int dataBits;
+        int stopBits;
+        std::string dataPaity;
+    };
 
 namespace keys
 {

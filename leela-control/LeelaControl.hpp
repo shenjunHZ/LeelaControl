@@ -2,7 +2,6 @@
 // 或特定于项目的包含文件。
 
 #pragma once
-
 #include <iostream>
 #include <QtCore/QCoreApplication>
 #include <boost/exception/diagnostic_information.hpp>

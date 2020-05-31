@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
     {
         helps::parseProgramOptions(argc, argv, cmdParams);
         config = cmdParams["config"].as<std::string>();
+        LOG_DEBUG_MSG("Start leela with config {}.", config);
     }
     else
     {
@@ -35,9 +36,14 @@ int main(int argc, char* argv[])
         applications::AppInstance appInstance(serviceContext);
         serviceContext.m_zmqReceiver.receiveLoop();
     }
-    catch (const std::exception& e)
+    catch (const boost::exception& e)
     {
         LOG_ERROR_MSG("{}", boost::diagnostic_information(e));
+        return EXIT_FAILURE;
+    }
+    catch (const std::exception& e)
+    {
+        LOG_ERROR_MSG("{}", e.what());
         return EXIT_FAILURE;
     }
 

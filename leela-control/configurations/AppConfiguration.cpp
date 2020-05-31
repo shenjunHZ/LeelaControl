@@ -37,8 +37,15 @@ namespace
             (configurations::waitLeelazStartTimes, value<int>()->default_value(10), "wait leela zero init weight file")
             (configurations::loggerLevel, value<int>()->default_value(1), "output logger level Debug=1")
             (configurations::maxFileSize, value<int>()->default_value(3 * 1024 *1024), "each rotate log file size")
-            (configurations::maxRotateFiles, value<int>()->default_value(3), "max rotate files");
-
+            (configurations::maxRotateFiles, value<int>()->default_value(3), "max rotate files")
+            
+            (configurations::portCom,  value<std::string>()->required(), "leela command port com config")
+            (configurations::baudRate, value<int>()->required(), "leela command com baud rate config")
+            (configurations::dataBits, value<int>()->required(), "leela command com data bits config")
+            (configurations::stopBits, value<int>()->required(), "leela command com stop bits config")
+            (configurations::dataPaity, value<std::string>()->required(), "leela command com data paity config")
+            
+            (configurations::enableGTPEngine, value<bool>()->default_value(false), "start leela with gpu");
 
         return description;
     }

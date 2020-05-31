@@ -1,5 +1,6 @@
 #include <bitset>
 #include "AppInstance.hpp"
+#include "applications/ServiceContext.hpp"
 #include "helps/ParseHelp.hpp"
 
 namespace
@@ -100,14 +101,16 @@ namespace applications
     AppInstance::AppInstance(applications::ServiceContext& serviceContext)
         : m_Management{getLeelaPath(serviceContext.m_configParams),
                        isEnableLeelaLog(serviceContext.m_configParams),
-                       serviceContext.m_logger}
-        , m_userApp{m_Management}
+                       serviceContext.m_logger,
+                       serviceContext.m_configParams }
+        , m_userApp{ m_Management }
         , m_serviceReceiver{serviceContext.m_zmqReceiver,
 							serviceContext.m_zmqContext,
 							helps::createBindableAddress(serviceContext.m_addresses.serviceAddress),
 							m_userApp}
         , m_tcpSysCallFactory{}
         , m_tcpServEndpoint{ m_tcpSysCallFactory, serviceContext.m_zmqReceiver, serviceContext.m_addresses, m_userApp }
+        //, m_comControlPtr{ std::make_unique<com::ComControl>(serviceContext, m_userApp) }
     {
         initService(serviceContext.m_configParams);
     }
@@ -119,9 +122,12 @@ namespace applications
         {
             if(bitSet.test(index))
             {
-                m_Management.createJobLeela(static_cast<leelaStarLevel>(index));
-                m_Management.startJobLeela(static_cast<leelaStarLevel>(index));
+                //m_Management.createJobLeela(static_cast<leelaStarLevel>(index + 1));
             }
+        }
+        if (m_comControlPtr)
+        {
+            m_comControlPtr->startPortCom();
         }
     }
 

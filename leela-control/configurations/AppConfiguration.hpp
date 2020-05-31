@@ -7,6 +7,8 @@
 #define ADDRESSER_PREFIX    "addresses"
 #define LOGGER_PREFIX       "logger"
 #define TCP_PREFIX          "tcp"
+#define COM_PREFIX          "com"
+#define GPU_PREFIX          "gpu"
 
 namespace configurations
 {
@@ -36,6 +38,14 @@ namespace configurations
     constexpr auto loggerLevel    = LOGGER_PREFIX ".loggerLevel";
     constexpr auto maxFileSize    = LOGGER_PREFIX ".maxFileSize";
     constexpr auto maxRotateFiles = LOGGER_PREFIX ".maxRotateFiles";
+
+    constexpr auto portCom   = COM_PREFIX ".portCom";
+    constexpr auto baudRate  = COM_PREFIX ".baudRate";
+    constexpr auto dataBits  = COM_PREFIX ".dataBits";
+    constexpr auto stopBits  = COM_PREFIX ".stopBits";
+    constexpr auto dataPaity = COM_PREFIX ".dataPaity";
+
+    constexpr auto enableGTPEngine = GPU_PREFIX ".enableGTPEngine";
 
     using AppConfiguration = boost::program_options::variables_map;
 

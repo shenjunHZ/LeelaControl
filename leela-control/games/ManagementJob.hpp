@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <memory>
 #include <map>
@@ -15,12 +14,14 @@ namespace games
     class ManagementJob : public IManagementJob
     {
     public:
-        ManagementJob(const std::string& binary, const bool& enableLeelaLog, spdlog::logger& logger);
+        ManagementJob(const std::string& binary, const bool& enableLeelaLog, spdlog::logger& logger,
+            const configurations::AppConfiguration& config);
         ~ManagementJob();
 
         void createJobLeela(const leelaStarLevel& level) override;
-        void startJobLeela(const leelaStarLevel& level) override;
-        IJob& getJob(const leelaStarLevel& level) override;
+        void startJobLeela(const leelaStarLevel& level, configurations::types::RespCallback callback) override;
+        void stopGameLeela(const leelaStarLevel& level) override;
+        boost::optional<IJob&> getJob(const leelaStarLevel& level) override;
 
     private:
         std::string m_binaryPath;

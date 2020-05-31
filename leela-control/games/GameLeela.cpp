@@ -7,6 +7,7 @@
 #include <boost/exception/diagnostic_information.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include <string>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "games/GameLeela.hpp"
@@ -20,6 +21,7 @@ namespace
     /* in windows Sleep API in milliseconds*/
     constexpr int WAIT_GTP_INITIALIZE = 1000 * 5;
 #endif
+    constexpr int ReadBufferSize{256};
 }
 namespace games
 {
@@ -34,7 +36,7 @@ namespace games
         , m_commands{commands}
         , m_logger{logger}
     {
- #ifdef WIN32
+ #ifdef WIN_ENV_RUN
          m_strBinary.append(".exe");
  #endif
         boost::filesystem::path pathFile(m_strBinary);
@@ -45,28 +47,15 @@ namespace games
         m_cmdLine = m_strBinary + " " + opt + weights;
     }
 
-    std::string GameLeela::getCurrentTime()
-    {
-        std::time_t currentTime(0);
-        struct tm nowTime;
-        std::time(&currentTime);
-#ifdef WIN_ENV_RUN
-        localtime_s(&nowTime, &currentTime);
-#else
-        localtime_r(&currentTime, &nowTime);
-#endif // WIN_ENV_RUN
-
-        char cTime[64];
-        std::strftime(cTime, sizeof(cTime), "%Y-%m-%d %H:%M:%S", &nowTime);
-        return std::string{cTime};
-    }
-
     void GameLeela::recordError(const errorInfo& error)
     {
         switch (error)
         {
         case errorInfo::ERROR_NO_LEELAZ:
-            LOG_ERROR_MSG("No 'leelaz' binary found.");
+            LOG_ERROR_MSG("No leelaz binary found.");
+            break;
+        case errorInfo::ERROR_PROCESS_DIED:
+            LOG_ERROR_MSG("leelaz process died.");
             break;
         case errorInfo::ERROR_LAUNCH:
             LOG_ERROR_MSG("Could not talk to engine after launching.");
@@ -88,7 +77,7 @@ namespace games
         usleep(WAIT_GTP_INITIALIZE);
 #endif
         write(qPrintable("version\n"));
-        //QTextStream(stdout) << "version:" << endl;
+        LOG_DEBUG_MSG("Send version gtp to leela.");
         waitForBytesWritten(-1);
         if (!waitReady()) 
         {
@@ -96,8 +85,21 @@ namespace games
             exit(EXIT_FAILURE);
         }
 
-        char readBuffer[256];
-        int readCount = read(readBuffer, 256); // IO read, have some starting message need to read
+        char readBuffer[ReadBufferSize];
+        int readCount = readLine(readBuffer, sizeof(readBuffer)); // IO read, have some starting message need to read
+        //If it is a GTP comment just print it and wait for the real answer
+        //this happens with the winogard tuning
+        if (readBuffer[0] == '#') 
+        {
+            readBuffer[readCount - 1] = 0;
+            LOG_DEBUG_MSG("Read leela zero version Info: {}", readBuffer);
+            if (!waitReady()) 
+            {
+                recordError(errorInfo::ERROR_PROCESS_DIED);
+                exit(EXIT_FAILURE);
+            }
+            readCount = readLine(readBuffer, 256);
+        }
 
         LOG_DEBUG_MSG("Read leela zero version Info: {}", readBuffer);
     }
@@ -118,16 +120,17 @@ namespace games
 
     bool GameLeela::eatNewLine()
     {
-        char readBuffer[256];
+        char readBuffer[ReadBufferSize];
         // Eat double newline from GTP protocol
         if (!waitReady()) 
         {
             recordError(errorInfo::ERROR_PROCESS);
             return false;
         }
-        auto readCount = readLine(readBuffer, 256);
+        auto readCount = readLine(readBuffer, sizeof(readBuffer));
         if (readCount < 0) 
         {
+            LOG_WARNING_MSG("Read leela data empty.");
             recordError(errorInfo::ERROR_GTP);
             return false;
         }
@@ -136,6 +139,7 @@ namespace games
 
     bool GameLeela::sendGtpCommand(QString cmd, std::string& result)
     {
+        LOG_DEBUG_MSG("Time: {}, Send GTP command to leela: {}", getCurrentTime(), cmd.toStdString().c_str());
         write(qPrintable(cmd.append("\n")));
         waitForBytesWritten(-1);
         if (!waitReady())
@@ -144,13 +148,11 @@ namespace games
             return false;
         }
 
-        char readBuffer[256];
-        int readCount = readLine(readBuffer, 256);
-
-        std::cout << "Debug: " << getCurrentTime() << std::endl;
-        QTextStream(stdout) << "GTP: " << readBuffer << endl;
+        char readBuffer[ReadBufferSize];
+        int readCount = readLine(readBuffer, sizeof(readBuffer));
         if (readCount <= 0 || readBuffer[0] != '=')
         {
+            LOG_WARNING_MSG("Receive data from leela incorrect: {}", readBuffer);
             recordError(errorInfo::ERROR_GTP);
             return false;
         }
@@ -159,7 +161,14 @@ namespace games
             recordError(errorInfo::ERROR_PROCESS);
             return false;
         }
+        LOG_DEBUG_MSG("Receive GTP response from leela zero: {}", readBuffer);
         result = readBuffer;
+        const auto& pos = result.find("=");
+        if (std::string::npos != pos)
+        {
+            result = result.substr(pos, result.size() - pos);
+        }
+
         return true;
     }
 
@@ -167,27 +176,38 @@ namespace games
     {
         start(QString::fromStdString(m_cmdLine)); // use QProcess
         LOG_DEBUG_MSG("Start command: {}", m_cmdLine.c_str());
-
         /*wait for process start*/
         if (!waitForStarted())
         {
             recordError(errorInfo::ERROR_NO_LEELAZ);
             return false;
         }
+        int readCount = 0;
+        do 
+        {
+            char readBuffer[ReadBufferSize];
+            readCount = readLine(readBuffer, sizeof(readBuffer));
+            LOG_DEBUG_MSG("Read leela zero Info: {}", readBuffer);
+        } while (readCount > 0);
 
         checkStatus(minVersion);
-        QTextStream(stdout) << "Engine has started." << endl;
+        LOG_DEBUG_MSG("Engine has started.");
         for (auto command : m_commands) 
         {
-            QTextStream(stdout) << QString::fromStdString(command) + ": " << endl;
             std::string result = "";
              if (!sendGtpCommand(QString::fromStdString(command), result))
              {
-                 QTextStream(stdout) << "GTP failed on: " << QString::fromStdString(command) << endl;
-                 exit(EXIT_FAILURE);
+                 LOG_ERROR_MSG("GTP failed on: {}, result: {}", command, result);
+                 continue;
              }
         }
-        //QTextStream(stdout) << "Thinking time set." << endl;
+        return true;
+    }
+
+    bool GameLeela::gameDown()
+    {
+        LOG_DEBUG_MSG("End leela engine.");
+        terminate();
         return true;
     }
 

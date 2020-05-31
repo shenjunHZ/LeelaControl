@@ -9,6 +9,7 @@
 #include <spdlog/logger.h>
 #include "configurations/DefineView.hpp"
 #include "logger/Logger.hpp"
+#include "ILeela.hpp"
 
 namespace
 {
@@ -18,7 +19,7 @@ namespace
 namespace games
 {
     using namespace configurations;
-    class GameLeela : public QProcess
+    class GameLeela : public ILeela, public QProcess
     {
     public:
         /*
@@ -31,15 +32,15 @@ namespace games
             spdlog::logger& logger);
         ~GameLeela() = default;
 
-        bool gameStart(const VersionTuple& minVersion);
-        bool sendGtpCommand(QString cmd, std::string& result);
+        bool gameStart(const VersionTuple& minVersion) override;
+        bool gameDown() override;
+        bool sendGtpCommand(QString cmd, std::string& result) override;
 
     private:
         void recordError(const errorInfo& error);
         void checkStatus(const VersionTuple &minVersion);
         bool waitReady();
         bool eatNewLine();
-        std::string getCurrentTime();
 
     private:
         std::string m_strBinary;

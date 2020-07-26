@@ -51,7 +51,7 @@ struct Handler : public boost::static_visitor <void>
     }
     void operator () (configurations::messageData)
     {
-        std::cout << "Debug: " << "process zmq message. " << std::endl;
+   
     }
     void operator () (configurations::types::TcpMessageEnvelope messageEnvolope)
     {
@@ -90,7 +90,7 @@ struct Handler : public boost::static_visitor <void>
         }
         catch (boost::bad_lexical_cast & e)
         {
-            std::cout << "error: " << "decode socket fd " << socketFd << "failed: " << e.what() << std::endl;
+            LOG_ERROR_MSG("Decode socket fd {} failed: {}", socketFd, e.what());
         }
     }
 

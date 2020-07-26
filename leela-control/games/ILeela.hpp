@@ -43,19 +43,19 @@ protected:
         switch (error)
         {
         case errorInfo::ERROR_NO_LEELAZ:
-            LOG_ERROR_MSG("No leelaz binary found.");
+            LOG_ERROR_MSG("Record Error No leelaz binary found.");
             break;
         case errorInfo::ERROR_PROCESS_DIED:
-            LOG_ERROR_MSG("leelaz process died.");
+            LOG_ERROR_MSG("Record Error leelaz process died.");
             break;
         case errorInfo::ERROR_LAUNCH:
-            LOG_ERROR_MSG("Could not talk to engine after launching.");
+            LOG_ERROR_MSG("Record Error could not talk to engine after launching.");
             break;
         case errorInfo::ERROR_PROCESS:
-            LOG_ERROR_MSG("The 'leelaz' process died unexpected.");
+            LOG_ERROR_MSG("Record Error the 'leelaz' process died unexpected.");
             break;
         case errorInfo::ERROR_GTP:
-            LOG_ERROR_MSG("Error in GTP response.");
+            LOG_ERROR_MSG("Record Error in GTP response.");
             break;
         }
     }

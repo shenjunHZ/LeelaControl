@@ -160,6 +160,7 @@ namespace games
         if (m_gameLeela)
         {
             m_gameLeela->gameDown();
+            m_gameLeela.reset();
         }
 
         m_strWeight.clear();

@@ -22,6 +22,7 @@ namespace
     constexpr int WAIT_GTP_INITIALIZE = 1000 * 5;
 #endif
     constexpr int ReadBufferSize{256};
+    constexpr int WAIT_QPROCESS_QUIT = 1 * 1000;
 }
 namespace games
 {
@@ -150,15 +151,20 @@ namespace games
 
         char readBuffer[ReadBufferSize];
         int readCount = readLine(readBuffer, sizeof(readBuffer));
+        bool isReadSuccess{ true };
         if (readCount <= 0 || readBuffer[0] != '=')
         {
             LOG_WARNING_MSG("Receive data from leela incorrect: {}", readBuffer);
             recordError(errorInfo::ERROR_GTP);
-            return false;
+            isReadSuccess = false;
         }
         if (!eatNewLine())
         {
             recordError(errorInfo::ERROR_PROCESS);
+            isReadSuccess = false;
+        }
+        if (!isReadSuccess)
+        {
             return false;
         }
         LOG_DEBUG_MSG("Receive GTP response from leela zero: {}", readBuffer);
@@ -207,7 +213,11 @@ namespace games
     bool GameLeela::gameDown()
     {
         LOG_DEBUG_MSG("End leela engine.");
-        terminate();
+        if (!waitForFinished(WAIT_QPROCESS_QUIT))
+        {
+            terminate();
+            waitForFinished(WAIT_QPROCESS_QUIT);
+        }
         return true;
     }
 

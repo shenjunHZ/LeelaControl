@@ -1,5 +1,4 @@
-﻿// LeelaControl.cpp: 定义应用程序的入口点。
-/* 
+﻿/* 
 * Copyright (C) jun shen
 */
 #include "LeelaControl.hpp"

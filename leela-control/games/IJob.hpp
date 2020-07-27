@@ -19,6 +19,6 @@ namespace games
         virtual void startGameLeela(const resultCallback&) = 0;
         virtual void inputGTPCommand(const std::string& chassBoardID, const std::string& command,
             const resultCallback&) = 0;
-        virtual void stopGameLeela() = 0;
+        virtual void stopGameLeela(const resultCallback&) = 0;
     };
 };

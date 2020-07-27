@@ -64,7 +64,7 @@ namespace applications
             {
                 if (std::string::npos != command.find(STOP_AI))
                 {
-                    m_managementJob.stopGameLeela(it->second);
+                    m_managementJob.stopGameLeela(it->second, callback);
                     m_socketToLeela.erase(id);
                 }
                 else

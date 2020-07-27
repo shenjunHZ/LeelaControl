@@ -11,7 +11,7 @@ namespace games
         virtual ~IManagementJob() = default;
         virtual void createJobLeela(const leelaStarLevel&) = 0;
         virtual void startJobLeela(const leelaStarLevel&, configurations::types::RespCallback) = 0;
-        virtual void stopGameLeela(const leelaStarLevel&) = 0;
+        virtual void stopGameLeela(const leelaStarLevel&, configurations::types::RespCallback) = 0;
         virtual  boost::optional<IJob&> getJob(const leelaStarLevel&) = 0;
     };
 } // namespace games

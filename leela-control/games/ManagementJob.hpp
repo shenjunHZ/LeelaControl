@@ -20,7 +20,7 @@ namespace games
 
         void createJobLeela(const leelaStarLevel& level) override;
         void startJobLeela(const leelaStarLevel& level, configurations::types::RespCallback callback) override;
-        void stopGameLeela(const leelaStarLevel& level) override;
+        void stopGameLeela(const leelaStarLevel& level, configurations::types::RespCallback callback) override;
         boost::optional<IJob&> getJob(const leelaStarLevel& level) override;
 
     private:

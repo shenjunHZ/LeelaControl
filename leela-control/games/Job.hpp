@@ -32,7 +32,7 @@ namespace games
         ~Job();
         void createJobParameter(const leelaStarLevel& level) override;
         void startGameLeela(const resultCallback& callback) override;
-        void stopGameLeela() override;
+        void stopGameLeela(const resultCallback& callback) override;
 
         void inputGTPCommand(const std::string& chassBoardID, const std::string& command,
             const resultCallback& callback) override;

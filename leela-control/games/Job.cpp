@@ -120,7 +120,7 @@ namespace games
         }
         /* QProcess need with GameLeela instantiation thread */
         m_gameLeela->gameStart(version);
-        callback("=");
+        callback("= ");
 
         //gameA();
         while(keep_running)
@@ -154,13 +154,15 @@ namespace games
         m_threadGame = std::thread(&Job::runGame, this, callback);
     }
 
-    void Job::stopGameLeela()
+    void Job::stopGameLeela(const resultCallback& callback)
     {
         LOG_INFO_MSG(m_logger, "Stop leela game.");
         if (m_gameLeela)
         {
             m_gameLeela->gameDown();
             m_gameLeela.reset();
+            const std::string result = "= ";
+            callback(result);
         }
 
         m_strWeight.clear();

@@ -54,13 +54,13 @@ namespace games
         LOG_ERROR_MSG("Leela have not been created for level {}.", static_cast<int>(level));
     }
 
-    void ManagementJob::stopGameLeela(const leelaStarLevel& level)
+    void ManagementJob::stopGameLeela(const leelaStarLevel& level, configurations::types::RespCallback callback)
     {
         for (const auto& gameJob : m_gameJobs)
         {
             if (gameJob.first == level)
             {
-                gameJob.second->stopGameLeela();
+                gameJob.second->stopGameLeela(callback);
                 gameJob.second->inputGTPCommand( "", "dead", nullptr );
                 m_gameJobs.erase(level);
                 return;
